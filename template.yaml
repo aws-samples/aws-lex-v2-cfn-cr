@@ -20,7 +20,7 @@ Parameters:
 
 Metadata:
   AWS::ServerlessRepo::Application:
-    Name: LexV2CfnCr
+    Name: lex-v2-cfn-cr
     Description: Amazon Lex V2 CloudFormation Custom Resource
     Author: AWS Lex
     ReadmeUrl: README.md

@@ -11,8 +11,8 @@ AWS account. There are two ways to deploy this project:
 
 1. Using the [AWS Serverless Application Repository (SAR)](https://aws.amazon.com/serverless/serverlessrepo/)
 
-    You can deploy this project from the following AWS Console link:
-    [https://console.aws.amazon.com/lambda/home?region=us-east-1#/create/app?applicationId=arn:aws:serverlessrepo:us-east-1:506886316466:applications/LexV2CfnCr](https://console.aws.amazon.com/lambda/home?region=us-east-1#/create/app?applicationId=arn:aws:serverlessrepo:us-east-1:506886316466:applications/LexV2CfnCr)
+    You can deploy this project from the following AWS Console
+    [one click link](https://console.aws.amazon.com/lambda/home#/create/app?applicationId=arn:aws:serverlessrepo:us-east-1:506886316466:applications/lex-v2-cfn-cr)
 
     Once you deploy it, you can reference the Custom Resource stack Lambda
     function and IAM role in your CloudFormation templates. See the [Usage](#usage)
@@ -37,7 +37,7 @@ AWS account. There are two ways to deploy this project:
         Type: AWS::Serverless::Application
         Properties:
           Location:
-            ApplicationId: arn:aws:serverlessrepo:us-east-1:506886316466:applications/LexV2CfnCr
+            ApplicationId: arn:aws:serverlessrepo:us-east-1:506886316466:applications/lex-v2-cfn-cr
             SemanticVersion: 0.1.0
           Parameters:
             # Custom Resource Lambda log level
