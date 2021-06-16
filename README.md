@@ -63,7 +63,7 @@ commands from a host with the sam cli:
     ```
 
    See the [examples/order-flowers](examples/order-flowers) directory for a
-   template that illustrates how to use this approach. See the [Development](#Development) section below for more details.
+   template that illustrates how to use this approach. See the [Development](#development) section below for more details.
 
 ### Usage
 
@@ -259,13 +259,13 @@ The first command will build the source of your application. The second command 
 * **Allow SAM CLI IAM role creation**: Many AWS SAM templates, including this example, create AWS IAM roles required for the AWS Lambda function(s) included to access AWS services. By default, these are scoped down to minimum required permissions. To deploy an AWS CloudFormation stack which creates or modifies IAM roles, the `CAPABILITY_IAM` value for `capabilities` must be provided. If permission isn't provided through this prompt, to deploy this example you must explicitly pass `--capabilities CAPABILITY_IAM` to the `sam deploy` command.
 * **Save arguments to samconfig.toml**: If set to yes, your choices will be saved to a configuration file inside the project, so that in the future you can just re-run `sam deploy` without parameters to deploy changes to your application.
 
-## Development
+### Development Environment Setup
 This project is developed and tested on Amazon Linux 2 using AWS Cloud9:
 - Bash 4.2
 - Python 3.8
 - Python requirements listed in the
-  [requirements/requirements-build.txt](requiremetns/requirements-build.txt) and
-  [requirements/requirements-dev.txt](requiremetns/requirements-dev.txt) files
+  [requirements/requirements-build.txt](requirements/requirements-build.txt) and
+  [requirements/requirements-dev.txt](requirements/requirements-dev.txt) files
 - AWS SAM CLI ~= 1.24.0
 - Docker >= 20
 - GNU make >= 3.82
@@ -307,6 +307,12 @@ falicilitate tasks such as:
 
     ```bash
     make lint
+    ```
+
+5. Publish to SAR:
+
+    ```bash
+    make publish
     ```
 
 ### SAM Local Invoke
