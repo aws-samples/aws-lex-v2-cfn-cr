@@ -11,8 +11,8 @@ AWS account. There are two ways to deploy this project:
 
 1. Using the [AWS Serverless Application Repository (SAR)](https://aws.amazon.com/serverless/serverlessrepo/)
 
-    You can deploy this project from the following AWS Console
-    [one click link](https://console.aws.amazon.com/lambda/home#/create/app?applicationId=arn:aws:serverlessrepo:us-east-1:506886316466:applications/lex-v2-cfn-cr)
+    You can deploy this project with this AWS Console
+    [one click link](https://console.aws.amazon.com/lambda/home#/create/app?applicationId=arn:aws:serverlessrepo:us-east-1:506886316466:applications/lex-v2-cfn-cr).
 
     Once you deploy it, you can reference the Custom Resource stack Lambda
     function and IAM role in your CloudFormation templates. See the [Usage](#usage)
@@ -349,7 +349,7 @@ EVENT_FILE=tests/events/lex_v2_cfn_cr/create-bot.json make local-invoke-lex_v2_c
   ```
 
  Set the `DEBUGGER` environmental variable. For example, to debug the
- `incoming_process` function, run the following command:
+ `lex_v2_cfn_cr` function, run the following command:
 
 ```shell
 DEBUGGER=true EVENT_FILE=tests/events/lex_v2_cfn_cr/create-bot.json make local-invoke-lex_v2_cfn_cr
