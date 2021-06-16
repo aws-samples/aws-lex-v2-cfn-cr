@@ -5,25 +5,65 @@
 ## Quick Start
 
 ### Deploy Your Own Stack
-There are two ways to deploy this project:
+
+Before you can use the Custom Resource, you need to deploy this project in your
+AWS account. There are two ways to deploy this project:
 
 1. Using the [AWS Serverless Application Repository (SAR)](https://aws.amazon.com/serverless/serverlessrepo/)
-  to deploy a pre-built version from the AWS Console.
-  **TBD**: link to SAR project
-  **INTERNAL NOTE (REMOVE):** The current template uses an IAM Service Linked Role.
-  Currently, this resource type is not in the
-  [list of supported resources](https://docs.aws.amazon.com/serverlessrepo/latest/devguide/list-supported-resources.html).
-  There is a [request](https://t.corp.amazon.com/V381564301/overview)
-  to allow-list this resource type which is in progress. We may temporarily
-  change it to a regular IAM role if needed.
 
-2. Using the [AWS Serverless Application Model Command Line Interface (SAM CLI)](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html)
-to build and deploy from an Unix like shell:
+    You can deploy this project from the following AWS Console link:
+    [https://console.aws.amazon.com/lambda/home?region=us-east-1#/create/app?applicationId=arn:aws:serverlessrepo:us-east-1:506886316466:applications/LexV2CfnCr](https://console.aws.amazon.com/lambda/home?region=us-east-1#/create/app?applicationId=arn:aws:serverlessrepo:us-east-1:506886316466:applications/LexV2CfnCr)
 
-```bash
-sam build --use-container
-sam deploy --guided
-```
+    Once you deploy it, you can reference the Custom Resource stack Lambda
+    function and IAM role in your CloudFormation templates. See the [Usage](#usage)
+    section below.
+
+    Alternatively, you can directly embed the SAR application as a nested stack
+    in your CloudFormation template. See the following snippet or the
+    [examples/zip-code](examples/zip-code) directory for a template that uses
+    this approach.
+
+    **NOTE:** Deploying the stack with the link above is preferred in cases
+    where you want a single instance of the Custom Resource to be shared
+    between stacks.
+
+    ```yaml
+    Resources:
+      # This deploys the Custom Resource as a nested CloudFormation stack
+      # The Custom Resource is provisioned with your bot. However, the Custom
+      # Resource becomes dedicated and should not be shared with other stacks
+      # as it gets deleted when you delete your stack
+      LexV2CfnCr:
+        Type: AWS::Serverless::Application
+        Properties:
+          Location:
+            ApplicationId: arn:aws:serverlessrepo:us-east-1:506886316466:applications/LexV2CfnCr
+            SemanticVersion: 0.1.0
+          Parameters:
+            # Custom Resource Lambda log level
+            LogLevel: 'INFO'
+
+      LexBot:
+        Type: Custom::LexBot
+        Properties:
+          # this references the Lambda function created by the Custom Resource stack above.
+          # Note that it uses the Outputs of the nested stack
+          ServiceToken: !GetAtt LexV2CfnCr.Outputs.LexV2CfnCrFunctionArn
+          botName: My Bot
+          # ...
+          # See the example in the examples/zip-code directory for a full template
+          # that uses this approach
+    ```
+
+2. Using the [AWS Serverless Application Model Command Line Interface (SAM CLI)](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html). Clone this repo and issue the following
+commands from a host with the sam cli:
+    ```bash
+    sam build --use-container
+    sam deploy --guided
+    ```
+
+   See the [examples/order-flowers](examples/order-flowers) directory for a
+   template that illustrates how to use this approach. See the [Development](#Development) section below for more details.
 
 ### Usage
 
@@ -126,9 +166,13 @@ Resources:
 
   # Creates an immutable Bot Version
   LexBotVersion:
-    # Version changes between updates which cause a CloudFormation delete event
-    # The following policies prevent deletions
+    # Bot versions are deleted by the Bot on Stack deletions. This deletion
+    # policy speeds up deletes
     DeletionPolicy: Retain
+    # Version number changes between updates which cause a CloudFormation
+    # delete event since the version number is the physical resource ID.
+    # The following policies prevents deletion events to keep versions and
+    # speed up updates
     UpdateReplacePolicy: Retain
     Type: Custom::LexBotVersion
     Properties:
@@ -144,6 +188,9 @@ Resources:
 
   # Provisions a Bot Alias that points to a version
   LexBotAlias:
+    # Bot aliases are deleted by the Bot on Stack deletions. This deletion
+    # policy speeds up deletes
+    DeletionPolicy: Retain
     Type: Custom::LexBotAlias
     Properties:
       ServiceToken:

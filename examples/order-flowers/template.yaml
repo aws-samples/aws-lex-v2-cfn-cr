@@ -1,4 +1,10 @@
 ---
+AWSTemplateFormatVersion: 2010-09-09
+
+Description:
+  Sample Lex V2 Order Flowers Bot using CloudFormation Custom Resource imported
+  from a deployed stack
+
 Parameters:
   LexV2CfnCrStackName:
     Description: >-
@@ -173,9 +179,11 @@ Resources:
                       maxRetries: 2
 
   LexBotVersion:
-    # Version changes between updates which cause a CloudFormation delete event
-    # The following policies prevents these deletions
+    # Bot versions are deleted by the Bot on Stack Deletions
     DeletionPolicy: Retain
+    # Version number changes between updates which cause a CloudFormation
+    # delete event since the version number is the physical resource ID.
+    # The following policies prevents deletion events
     UpdateReplacePolicy: Retain
     Type: Custom::LexBotVersion
     Properties:
@@ -187,6 +195,8 @@ Resources:
       lastUpdatedDateTime: !GetAtt LexBot.lastUpdatedDateTime
 
   LexBotAlias:
+    # Alias is deleted by the Bot on Stack Deletions
+    DeletionPolicy: Retain
     Type: Custom::LexBotAlias
     Properties:
       ServiceToken:

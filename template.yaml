@@ -28,12 +28,13 @@ Metadata:
     LicenseUrl: LICENSE
     Labels:
       - Lex
+      - V2
       - CloudFormation
       - Custom
       - Resource
     HomePageUrl: https://github.com/aws-samples/lex-v2-cfn-cr
     # Keep version in sync with in Description, Mappings and Metadata
-    SemanticVersion: 1.0.0
+    SemanticVersion: 0.1.0
     SourceCodeUrl: https://github.com/aws-samples/lex-v2-cfn-cr
 
 Mappings:
@@ -136,9 +137,7 @@ Resources:
                 Action:
                   - iam:PassRole
                 Resource:
-                  - !Sub "arn:${AWS::Partition}:iam::\
-                          ${AWS::AccountId}:role/aws-service-role/\
-                          lexv2.amazonaws.com/${LexServiceLinkedRole}"
+                  - !GetAtt LexServiceLinkedRole.Arn
         # Used by custom resource helper poller
         # https://github.com/aws-cloudformation/custom-resource-helper
         - PolicyName: CrPollerCwe
@@ -162,26 +161,49 @@ Resources:
                   - !Sub "arn:${AWS::Partition}:lambda:${AWS::Region}:\
                           ${AWS::AccountId}:function:*"
 
+  # NOTE: this should changed to a service linked role once the resource is
+  # included in the allowed list:
+  # https://docs.aws.amazon.com/serverlessrepo/latest/devguide/list-supported-resources.html
+  # There is an ongoing request to include it.
   LexServiceLinkedRole:
-    Type: AWS::IAM::ServiceLinkedRole
+    Type: AWS::IAM::Role
     Properties:
-      AWSServiceName: lexv2.amazonaws.com
-      CustomSuffix:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lexv2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path:
         !Sub
-        - "${AppName}-${Version}"
+        - "/${AppName}/"
         - AppName:
             !FindInMap
             - Config
             - Application
             - Name
-          Version:
-            !FindInMap
-            - Config
-            - Application
-            - Version
       Description:
         !Sub "Lex Bot service role created by CloudFormation custom resource \
               - stack: ${AWS::StackName}"
+      Policies:
+        - PolicyName: Polly
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - polly:SynthesizeSpeech
+                Resource: '*'
+        - PolicyName: Comprehend
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - comprehend:DetectSentiment
+                Resource: '*'
 
   ##########################################################################
   # Lambda layers
@@ -197,6 +219,7 @@ Resources:
     Properties:
       Description:
         !Sub "Boto3 AWS Python SDK - Used by ${AWS::StackName}"
+      LayerName: !Sub "${AWS::StackName}-LexV2CfnCrBoto3Layer"
       ContentUri: ./src/lambda_layers/boto3
       CompatibleRuntimes:
         - python3.8
@@ -208,6 +231,7 @@ Resources:
     Properties:
       Description:
         !Sub "CloudFormation Custom Resource Helper - Used by ${AWS::StackName}"
+      LayerName: !Sub "${AWS::StackName}-LexV2CfnCrHelperLayer"
       ContentUri: ./src/lambda_layers/crhelper
       CompatibleRuntimes:
         - python3.8
@@ -256,9 +280,6 @@ Outputs:
 
   LexServiceLinkedRole:
     Description: Lex Service Linked IAM Role ARN
-    Value:
-      !Sub "arn:${AWS::Partition}:iam::\
-            ${AWS::AccountId}:role/aws-service-role/\
-            lexv2.amazonaws.com/${LexServiceLinkedRole}"
+    Value: !GetAtt LexServiceLinkedRole.Arn
     Export:
       Name: !Sub "${AWS::StackName}-LexServiceLinkedRole"

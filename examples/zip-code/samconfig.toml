@@ -10,9 +10,3 @@ region = "us-east-1"
 fail_on_empty_changeset = false
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM CAPABILITY_AUTO_EXPAND"
-tags = """
-  project="LexV2CfnCr" \
-"""
-parameter_overrides = """
-  LexV2CfnCrStackName=lex-v2-cfn-cr \
-"""
