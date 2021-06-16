@@ -1,0 +1,2 @@
+# should be kept in sync with requests/requirements-dev.txt
+boto3~=1.17.92

@@ -1,0 +1,9 @@
+# Dependencies are provided by Lambda Layers
+# crhelper==2.0.10
+# boto3==1.17.92
+# boto3-stubs[lexv2-models]==1.17.92
+
+# uncomment debugpy if you want to debug inside the Lambda container using
+# a remote debugger from your IDE
+
+# debugpy

@@ -1,0 +1,214 @@
+---
+Parameters:
+  LexV2CfnCrStackName:
+    Description: >-
+      Lex V2 Custom Resource Stack Name
+    Type: String
+    Default: lex-v2-cfn-cr
+
+Resources:
+  LexBot:
+    Type: Custom::LexBot
+    Properties:
+      ServiceToken:
+        !ImportValue
+          Fn::Sub: "${LexV2CfnCrStackName}-LexV2CfnCrFunctionArn"
+      botName: !Sub "${AWS::StackName}-OrderFlowers"
+      dataPrivacy:
+        childDirected: False
+      description: Bot to order flowers on the behalf of a user
+      idleSessionTTLInSeconds: 300
+      roleArn:
+        !ImportValue
+          Fn::Sub: "${LexV2CfnCrStackName}-LexServiceLinkedRole"
+      CR.botLocales:
+        - localeId: en_US
+          nluIntentConfidenceThreshold: 0.40
+          voiceSettings:
+            voiceId: Ivy
+          CR.slotTypes:
+            - slotTypeName: FlowerTypes
+              description: Types of flowers to pick up
+              valueSelectionSetting:
+                resolutionStrategy: OriginalValue
+              slotTypeValues:
+                - sampleValue:
+                    value: lilies
+                - sampleValue:
+                    value: roses
+                - sampleValue:
+                    value: tulips
+          CR.intents:
+            - intentName: OrderFlowers
+              description: Intent to order a bouquet of flowers for pick up
+              sampleUtterances:
+                - utterance: I would like to pick up flowers
+                - utterance: I would like to order some flowers
+              intentConfirmationSetting:
+                declinationResponse:
+                  messageGroups:
+                    - message:
+                        plainTextMessage:
+                          value: Okay, I will not place your order.
+                promptSpecification:
+                  messageGroups:
+                    - message:
+                        plainTextMessage:
+                          value: >-
+                            Okay, your {FlowerType} will be ready for pickup by
+                            {PickupTime} on {PickupDate}.  Does this sound okay?
+                  maxRetries: 2
+              CR.slots:
+                - slotName: FlowerType
+                  CR.slotTypeName: FlowerTypes
+                  description: The type of flowers to pick up
+                  valueElicitationSetting:
+                    slotConstraint: Required
+                    promptSpecification:
+                      messageGroups:
+                        - message:
+                            plainTextMessage:
+                              value:
+                                What type of flowers would you like to order?
+                      maxRetries: 2
+                - slotName: PickupDate
+                  CR.slotTypeName: AMAZON.Date
+                  description: The date to pick up the flowers
+                  valueElicitationSetting:
+                    slotConstraint: Required
+                    promptSpecification:
+                      messageGroups:
+                        - message:
+                            plainTextMessage:
+                              value: >-
+                                What day do you want the {FlowerType} to be
+                                picked up?
+                      maxRetries: 2
+                - slotName: PickupTime
+                  CR.slotTypeName: AMAZON.Time
+                  description: The time to pick up the flowers
+                  valueElicitationSetting:
+                    slotConstraint: Required
+                    promptSpecification:
+                      messageGroups:
+                        - message:
+                            plainTextMessage:
+                              value: >-
+                                At what time do you want the {FlowerType} to be
+                                picked up?
+                      maxRetries: 2
+        - localeId: es_US
+          nluIntentConfidenceThreshold: 0.40
+          voiceSettings:
+            voiceId: Lupe
+          CR.slotTypes:
+            - slotTypeName: TiposDeFlores
+              description: Tipos de flores a recoger
+              valueSelectionSetting:
+                resolutionStrategy: OriginalValue
+              slotTypeValues:
+                - sampleValue:
+                    value: lilas
+                - sampleValue:
+                    value: rosas
+                - sampleValue:
+                    value: tulipanes
+          CR.intents:
+            - intentName: OrdenarFlores
+              description: Intención para ordenar un ramo de flores para recogido
+              sampleUtterances:
+                - utterance: Yo quiero recoger flores
+                - utterance: Yo quiero ordenar flores
+              intentConfirmationSetting:
+                declinationResponse:
+                  messageGroups:
+                    - message:
+                        plainTextMessage:
+                          value: Entendido, no voy a poner la orden.
+                promptSpecification:
+                  messageGroups:
+                    - message:
+                        plainTextMessage:
+                          value: >-
+                            Entendido, sus {TipoDeFlores} estarán listas para
+                            recogido a las {HoraDeRecogido} el {FechaDeRecogido}.
+                            ¿Le parece bien?
+                  maxRetries: 2
+              CR.slots:
+                - slotName: TipoDeFlores
+                  CR.slotTypeName: TiposDeFlores
+                  description: El tipo de flor a recoger
+                  valueElicitationSetting:
+                    slotConstraint: Required
+                    promptSpecification:
+                      messageGroups:
+                        - message:
+                            plainTextMessage:
+                              value:
+                                ¿Qué tipo de flor le gustaría ordenar?
+                      maxRetries: 2
+                - slotName: FechaDeRecogido
+                  CR.slotTypeName: AMAZON.Date
+                  description: La fecha a recoger las flores
+                  valueElicitationSetting:
+                    slotConstraint: Required
+                    promptSpecification:
+                      messageGroups:
+                        - message:
+                            plainTextMessage:
+                              value: >-
+                                ¿En qué fecha le gustaría recoger las {TipoDeFlores}?
+                      maxRetries: 2
+                - slotName: HoraDeRecogido
+                  CR.slotTypeName: AMAZON.Time
+                  description: La hora a recoger las flores
+                  valueElicitationSetting:
+                    slotConstraint: Required
+                    promptSpecification:
+                      messageGroups:
+                        - message:
+                            plainTextMessage:
+                              value: >-
+                                ¿A qué hora le gustaría recoger las {TipoDeFlores}?
+                      maxRetries: 2
+
+  LexBotVersion:
+    # Version changes between updates which cause a CloudFormation delete event
+    # The following policies prevents these deletions
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Type: Custom::LexBotVersion
+    Properties:
+      ServiceToken:
+        !ImportValue
+          Fn::Sub: "${LexV2CfnCrStackName}-LexV2CfnCrFunctionArn"
+      botId: !Ref LexBot
+      botLocaleIds: !GetAtt LexBot.botLocaleIds
+      lastUpdatedDateTime: !GetAtt LexBot.lastUpdatedDateTime
+
+  LexBotAlias:
+    Type: Custom::LexBotAlias
+    Properties:
+      ServiceToken:
+        !ImportValue
+          Fn::Sub: "${LexV2CfnCrStackName}-LexV2CfnCrFunctionArn"
+      botId: !Ref LexBot
+      botAliasName: live
+      botVersion: !Ref LexBotVersion
+
+Outputs:
+  LexBotId:
+    Description: Lex Bot ID
+    Value: !Ref LexBot
+
+  LexBotLocaleIds:
+    Description: Lex Bot Locale IDs
+    Value: !Join [",", !GetAtt LexBot.botLocaleIds]
+
+  LexBotLatestVersion:
+    Description: Latest Lex Bot Version ID
+    Value: !Ref LexBotVersion
+
+  LexBotAliasId:
+    Description: Lex Bot Alias ID
+    Value: !Ref LexBotAlias

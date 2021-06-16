@@ -1,0 +1,17 @@
+{
+  "RequestType": "Create",
+  "ResponseURL": "http://pre-signed-S3-url-for-response",
+  "StackId": "arn:aws:cloudformation:us-east-1:123456789012:stack/MyStack/guid",
+  "RequestId": "unique id for this create request",
+  "ResourceType": "Custom::LexBot",
+  "LogicalResourceId": "MyTestBot",
+  "ResourceProperties": {
+    "ServiceToken": "token",
+    "botName": "MyBot",
+    "dataPrivacy": {
+      "childDirected": "false"
+    },
+    "idleSessionTTLInSeconds": "300",
+    "roleArn": "arn:aws:iam::012345678912:role/aws-service-role/lexv2.amazonaws.com/AWSServiceRoleForLexV2Bots_12345"
+  }
+}

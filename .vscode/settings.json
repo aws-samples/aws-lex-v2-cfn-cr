@@ -1,0 +1,11 @@
+{
+    "files.trimTrailingWhitespace": true,
+
+    "editor.rulers": [
+        80,
+        100
+    ],
+
+    "python.pythonPath": "${workspaceFolder}/out/venv/bin/python3.8",
+    "python.linting.pylintEnabled": true,
+}

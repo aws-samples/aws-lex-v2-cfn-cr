@@ -1,0 +1,264 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+# Keep version in sync with in Description, Mappings and Metadata
+Description: >-
+  Lex V2 CloudFormation Custom Resource (0.1.0)
+
+Parameters:
+  LogLevel:
+    Description: >-
+      Custom Resource Lambda log level
+    Type: String
+    Default: INFO
+    AllowedValues:
+      - CRITICAL
+      - ERROR
+      - WARNING
+      - INFO
+      - DEBUG
+
+Metadata:
+  AWS::ServerlessRepo::Application:
+    Name: LexV2CfnCr
+    Description: Amazon Lex V2 CloudFormation Custom Resource
+    Author: AWS Lex
+    ReadmeUrl: README.md
+    SpdxLicenseId: Apache-2.0
+    LicenseUrl: LICENSE
+    Labels:
+      - Lex
+      - CloudFormation
+      - Custom
+      - Resource
+    HomePageUrl: https://github.com/aws-samples/lex-v2-cfn-cr
+    # Keep version in sync with in Description, Mappings and Metadata
+    SemanticVersion: 1.0.0
+    SourceCodeUrl: https://github.com/aws-samples/lex-v2-cfn-cr
+
+Mappings:
+  Config:
+    Application:
+      Name: LexV2CfnCr
+      # Keep version in sync with in Description, Mappings and Metadata
+      Version: 0.1.0
+
+##########################################################################
+# SAM Globals
+# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html
+##########################################################################
+Globals:
+  Function:
+    Runtime: python3.8
+
+Resources:
+  ##########################################################################
+  # IAM
+  ##########################################################################
+  LexV2CfnCrIamRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path:
+        !Sub
+        - "/${AppName}/"
+        - AppName:
+            !FindInMap
+            - Config
+            - Application
+            - Name
+      Description:
+        !Sub "Used by Lex V2 Lambda CloudFormation Custom Resource in: \
+              ${AWS::StackName}"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        # Custom Resource Lex resource management
+        # https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonlexv2.html
+        - PolicyName: LexCrud
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - lex:BuildBotLocale
+                  - lex:CreateBot
+                  - lex:CreateBotAlias
+                  - lex:CreateBotLocale
+                  - lex:CreateBotVersion
+                  - lex:CreateIntent
+                  - lex:CreateSlot
+                  - lex:CreateSlotType
+                  - lex:DeleteBot
+                  - lex:DeleteBotAlias
+                  - lex:DeleteBotChannel
+                  - lex:DeleteBotLocale
+                  - lex:DeleteBotVersion
+                  - lex:DeleteIntent
+                  - lex:DeleteSlot
+                  - lex:DeleteSlotType
+                  - lex:DescribeBot
+                  - lex:DescribeBotAlias
+                  - lex:DescribeBotLocale
+                  - lex:DescribeBotVersion
+                  - lex:ListBotAliases
+                  - lex:ListBotLocales
+                  - lex:ListBotVersions
+                  - lex:ListIntents
+                  - lex:ListSlots
+                  - lex:ListSlotTypes
+                  - lex:TagResource
+                  - lex:UpdateBot
+                  - lex:UpdateBotAlias
+                  - lex:UpdateBotLocale
+                  - lex:UpdateBotVersion
+                  - lex:UpdateIntent
+                  - lex:UpdateSlot
+                  - lex:UpdateSlotType
+                Resource:
+                  - !Sub "arn:${AWS::Partition}:lex:${AWS::Region}:\
+                          ${AWS::AccountId}:bot/*"
+                  - !Sub "arn:${AWS::Partition}:lex:${AWS::Region}:\
+                          ${AWS::AccountId}:bot-alias/*"
+        # Custom Resource needs to pass an IAM service linked role
+        - PolicyName: PassRole
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - iam:PassRole
+                Resource:
+                  - !Sub "arn:${AWS::Partition}:iam::\
+                          ${AWS::AccountId}:role/aws-service-role/\
+                          lexv2.amazonaws.com/${LexServiceLinkedRole}"
+        # Used by custom resource helper poller
+        # https://github.com/aws-cloudformation/custom-resource-helper
+        - PolicyName: CrPollerCwe
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - events:PutRule
+                  - events:DeleteRule
+                  - events:PutTargets
+                  - events:RemoveTargets
+                Resource:
+                  - !Sub "arn:${AWS::Partition}:events:${AWS::Region}:\
+                          ${AWS::AccountId}:rule/*"
+              - Effect: Allow
+                Action:
+                  - lambda:AddPermission
+                  - lambda:RemovePermission
+                Resource:
+                  - !Sub "arn:${AWS::Partition}:lambda:${AWS::Region}:\
+                          ${AWS::AccountId}:function:*"
+
+  LexServiceLinkedRole:
+    Type: AWS::IAM::ServiceLinkedRole
+    Properties:
+      AWSServiceName: lexv2.amazonaws.com
+      CustomSuffix:
+        !Sub
+        - "${AppName}-${Version}"
+        - AppName:
+            !FindInMap
+            - Config
+            - Application
+            - Name
+          Version:
+            !FindInMap
+            - Config
+            - Application
+            - Version
+      Description:
+        !Sub "Lex Bot service role created by CloudFormation custom resource \
+              - stack: ${AWS::StackName}"
+
+  ##########################################################################
+  # Lambda layers
+  #
+  # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-layers.html
+  # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/building-layers.html
+  ##########################################################################
+
+  LexV2CfnCrBoto3Layer:
+    Type: AWS::Serverless::LayerVersion
+    Metadata:
+      BuildMethod: python3.8
+    Properties:
+      Description:
+        !Sub "Boto3 AWS Python SDK - Used by ${AWS::StackName}"
+      ContentUri: ./src/lambda_layers/boto3
+      CompatibleRuntimes:
+        - python3.8
+
+  LexV2CfnCrHelperLayer:
+    Type: AWS::Serverless::LayerVersion
+    Metadata:
+      BuildMethod: python3.8
+    Properties:
+      Description:
+        !Sub "CloudFormation Custom Resource Helper - Used by ${AWS::StackName}"
+      ContentUri: ./src/lambda_layers/crhelper
+      CompatibleRuntimes:
+        - python3.8
+
+  ##########################################################################
+  # Lambda Functions
+  # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+  ##########################################################################
+
+  LexV2CfnCrFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./src/lambda_functions/lex_v2_cfn_cr
+      Description: >-
+        Amazon Lex CloudFormation Customer Resource
+      Handler: .lambda_function.handler
+      Layers:
+        - !Ref LexV2CfnCrBoto3Layer
+        - !Ref LexV2CfnCrHelperLayer
+      MemorySize: 256
+      Role: !GetAtt LexV2CfnCrIamRole.Arn
+      Timeout: 900
+      Environment:
+        Variables:
+          LOG_LEVEL: !Ref LogLevel
+          AWS_SDK_USER_AGENT:
+            !Sub
+            - '{"user_agent_extra": "${AppName}/${Version}"}'
+            - AppName:
+                !FindInMap
+                - Config
+                - Application
+                - Name
+              Version:
+                !FindInMap
+                - Config
+                - Application
+                - Version
+
+Outputs:
+  LexV2CfnCrFunctionArn:
+    Description: Lex V2 CloudFormation Custom Resource Lambda Function ARN
+    Value: !GetAtt LexV2CfnCrFunction.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-LexV2CfnCrFunctionArn"
+
+  LexServiceLinkedRole:
+    Description: Lex Service Linked IAM Role ARN
+    Value:
+      !Sub "arn:${AWS::Partition}:iam::\
+            ${AWS::AccountId}:role/aws-service-role/\
+            lexv2.amazonaws.com/${LexServiceLinkedRole}"
+    Export:
+      Name: !Sub "${AWS::StackName}-LexServiceLinkedRole"
