@@ -203,6 +203,9 @@ Resources:
       botAliasName: live
       # points to the latest version of the resource above
       botVersion: !Ref LexBotVersion
+      botAliasLocaleSettings:
+        en_US:
+          enabled: True
 
 Outputs:
   LexBotId:

@@ -84,6 +84,9 @@ Resources:
       botId: !Ref LexBot
       botAliasName: live
       botVersion: !Ref LexBotVersion
+      botAliasLocaleSettings:
+        en_US:
+          enabled: True
 
 Outputs:
   LexBotId:
