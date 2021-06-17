@@ -147,11 +147,31 @@ publish: $(PUBLISH_OUT_FILE)
 ##########################################################################
 DEPLOY_OUT_FILE := $(OUT_DIR)/sam-deploy.txt
 $(DEPLOY_OUT_FILE): $(SAM_BUILD_TOML_FILE) | $(OUT_DIR) $(SAM_CMD)
+	@rm -f '$(DELETE_STACK_OUT_FILE)'
 	@echo '[INFO] sam deploying config env: [$(CONFIG_ENV)]'
 	'$(SAM_CMD)' deploy --config-env '$(CONFIG_ENV)' | tee '$(@)'
 
 deploy: $(DEPLOY_OUT_FILE)
 .PHONY: deploy
+
+##########################################################################
+# delete stack
+##########################################################################
+DELETE_STACK_OUT_FILE := $(OUT_DIR)/cfn-delete.txt
+$(DELETE_STACK_OUT_FILE): $(SAMCONFIG_FILE) | $(OUT_DIR)
+	@STACK_NAME=$$(python -c 'import toml; print( \
+		toml.load("$(SAMCONFIG_FILE)")["$(CONFIG_ENV)"]["deploy"]["parameters"]["stack_name"] \
+		)' \
+	) ; \
+	read -p "Do you want to delete the cloudformation stack: [$${STACK_NAME}]? " -r REPLY \
+		&& [[ "$$REPLY" =~ ^[Yy]$$ ]] \
+	&& echo "[INFO] deleting stack name: [$${STACK_NAME}]" \
+	&& rm -f '$(DEPLOY_OUT_FILE)' \
+	&& aws cloudformation delete-stack --stack-name "$${STACK_NAME}" \
+	| tee '$(@)'
+
+delete-stack: $(DELETE_STACK_OUT_FILE)
+.PHONY: delete-stack
 
 ##########################################################################
 # tests
