@@ -74,7 +74,10 @@ def get_and_validate_api_input_parameters(
                 for i in value
             ]
         elif type_name == "map":
-            params[key] = dict(value)
+            params[key] = {
+                i: get_and_validate_api_input_parameters(value[i], input_shape_member.value)
+                for i in value
+            }
         elif type_name in ["string", "char"]:
             params[key] = str(value)
         elif type_name == "boolean":
