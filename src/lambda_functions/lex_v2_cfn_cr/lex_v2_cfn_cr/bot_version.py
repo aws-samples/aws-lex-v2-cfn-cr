@@ -8,7 +8,11 @@ from typing import Any, Dict, Optional, TYPE_CHECKING
 import boto3
 
 from .shared.api import get_api_parameters, wait_for_operation
-from .shared.constants import DEFAULT_POLL_SLEEP_TIME_IN_SECS, DRAFT_VERSION
+from .shared.constants import (
+    CUSTOM_ATTRIBUTES,
+    DEFAULT_POLL_SLEEP_TIME_IN_SECS,
+    DRAFT_VERSION,
+)
 
 if TYPE_CHECKING:
     from mypy_boto3_lexv2_models import LexModelsV2Client
@@ -84,8 +88,8 @@ class BotVersion:
     ) -> Dict[str, Any]:
         """Create Bot Version"""
         bot_id = resource_properties["botId"]
-        bot_locale_ids = resource_properties["botLocaleIds"]
-        last_updated_date_time = resource_properties["lastUpdatedDateTime"]
+        bot_locale_ids = resource_properties[CUSTOM_ATTRIBUTES["botLocaleIds"]]
+        last_updated_date_time = resource_properties[CUSTOM_ATTRIBUTES["lastUpdatedDateTime"]]
 
         bot_version_locale_specification = {
             locale_id: dict(sourceBotVersion=DRAFT_VERSION) for locale_id in bot_locale_ids

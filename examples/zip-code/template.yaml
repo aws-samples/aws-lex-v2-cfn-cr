@@ -72,8 +72,8 @@ Resources:
     Properties:
       ServiceToken: !GetAtt LexV2CfnCr.Outputs.LexV2CfnCrFunctionArn
       botId: !Ref LexBot
-      botLocaleIds: !GetAtt LexBot.botLocaleIds
-      lastUpdatedDateTime: !GetAtt LexBot.lastUpdatedDateTime
+      CR.botLocaleIds: !GetAtt LexBot.botLocaleIds
+      CR.lastUpdatedDateTime: !GetAtt LexBot.lastUpdatedDateTime
 
   LexBotAlias:
     # Alias is deleted by the Bot on Stack Deletions

@@ -10,4 +10,6 @@ CUSTOM_ATTRIBUTES = dict(
     intents=f"{CUSTOM_ATTRIBUTE_PREFIX}intents",
     slots=f"{CUSTOM_ATTRIBUTE_PREFIX}slots",
     slotTypeName=f"{CUSTOM_ATTRIBUTE_PREFIX}slotTypeName",
+    botLocaleIds=f"{CUSTOM_ATTRIBUTE_PREFIX}botLocaleIds",
+    lastUpdatedDateTime=f"{CUSTOM_ATTRIBUTE_PREFIX}lastUpdatedDateTime",
 )

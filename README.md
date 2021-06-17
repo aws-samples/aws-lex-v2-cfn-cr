@@ -182,9 +182,11 @@ Resources:
       # Bot Version level attributes
       # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/lexv2-models.html#LexModelsV2.Client.create_bot_version
       botId: !Ref LexBot
-      botLocaleIds: !GetAtt LexBot.botLocaleIds
+      # botVersionLocaleSpecification is derived from the bot locales
+      # this controls which locales are added to the version
+      CR.botLocaleIds: !GetAtt LexBot.botLocaleIds
       # lastUpdatedDateTime is used to detect changes in the bot
-      lastUpdatedDateTime: !GetAtt LexBot.lastUpdatedDateTime
+      CR.lastUpdatedDateTime: !GetAtt LexBot.lastUpdatedDateTime
 
   # Provisions a Bot Alias that points to a version
   LexBotAlias:

@@ -191,8 +191,9 @@ Resources:
         !ImportValue
           Fn::Sub: "${LexV2CfnCrStackName}-LexV2CfnCrFunctionArn"
       botId: !Ref LexBot
-      botLocaleIds: !GetAtt LexBot.botLocaleIds
-      lastUpdatedDateTime: !GetAtt LexBot.lastUpdatedDateTime
+      # botVersionLocaleSpecification is derived from the bot locales
+      CR.botLocaleIds: !GetAtt LexBot.botLocaleIds
+      CR.lastUpdatedDateTime: !GetAtt LexBot.lastUpdatedDateTime
 
   LexBotAlias:
     # Alias is deleted by the Bot on Stack Deletions
