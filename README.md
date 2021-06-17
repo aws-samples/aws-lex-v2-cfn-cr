@@ -57,6 +57,7 @@ AWS account. There are two ways to deploy this project:
 
 2. Using the [AWS Serverless Application Model Command Line Interface (SAM CLI)](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html). Clone this repo and issue the following
 commands from a host with the sam cli:
+
     ```bash
     sam build --use-container
     sam deploy --guided
@@ -89,12 +90,16 @@ to be dynamically resolved.
 
 ```yaml
 Parameters:
+  # add a parameter to your bot template to reference the Custom Resource stack
   LexV2CfnCrStackName:
     Description: >-
-      Lex V2 Custom Resource Stack Name. This is used to import the Lambda
-      function and IAM role provisioned by the Custom Resource stack
+      Existing Lex V2 Custom Resource Stack Name. This is used to import the
+      Lambda function and IAM role provisioned by the Custom Resource stack
     Type: String
-    Default: lex-v2-cfn-cr
+    # If you deployed via the SAR Console and used the defaults, your repo
+    # will be named serverlessrepo-lex-v2-cfn-cr. If you deployed manually,
+    # make it match the name of your Custom Resource stack
+    Default: serverlessrepo-lex-v2-cfn-cr
 
 Resources:
   # LexBot resource contains bot definition including locales, slot types,
@@ -226,10 +231,11 @@ Outputs:
 ```
 
 ## Caveats
+
 - If a bot fails to build during a deployment, it may not be able to
-  automatically roll back the DRAFT version. In that case, you may need to
-  restore the DRAFT version manually or from an existing working version (using
-  export/import).
+  automatically roll back the `DRAFT` version. In that case, you may need to
+  restore the `DRAFT` version manually or from an existing working version
+  (using export/import).
 - Lex Bot Resource Policies are not implemented
 - Creation and update of the default fallback intent is not supported
 
@@ -245,9 +251,9 @@ in an Amazon Linux environment that matches Lambda.
 
 To use the SAM CLI, you need the following tools.
 
-* SAM CLI - [Install the SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
-* [Python 3 installed](https://www.python.org/downloads/)
-* Docker - [Install Docker community edition](https://hub.docker.com/search/?type=edition&offering=community)
+- SAM CLI - [Install the SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
+- [Python 3 installed](https://www.python.org/downloads/)
+- Docker - [Install Docker community edition](https://hub.docker.com/search/?type=edition&offering=community)
 
 To build and deploy your application for the first time, run the following in your shell:
 
@@ -258,14 +264,16 @@ sam deploy --guided
 
 The first command will build the source of your application. The second command will package and deploy your application to AWS, with a series of prompts:
 
-* **Stack Name**: The name of the stack to deploy to CloudFormation. This should be unique to your account and region, and a good starting point would be something matching your project name.
-* **AWS Region**: The AWS region you want to deploy your app to.
-* **Confirm changes before deploy**: If set to yes, any change sets will be shown to you before execution for manual review. If set to no, the AWS SAM CLI will automatically deploy application changes.
-* **Allow SAM CLI IAM role creation**: Many AWS SAM templates, including this example, create AWS IAM roles required for the AWS Lambda function(s) included to access AWS services. By default, these are scoped down to minimum required permissions. To deploy an AWS CloudFormation stack which creates or modifies IAM roles, the `CAPABILITY_IAM` value for `capabilities` must be provided. If permission isn't provided through this prompt, to deploy this example you must explicitly pass `--capabilities CAPABILITY_IAM` to the `sam deploy` command.
-* **Save arguments to samconfig.toml**: If set to yes, your choices will be saved to a configuration file inside the project, so that in the future you can just re-run `sam deploy` without parameters to deploy changes to your application.
+- **Stack Name**: The name of the stack to deploy to CloudFormation. This should be unique to your account and region, and a good starting point would be something matching your project name.
+- **AWS Region**: The AWS region you want to deploy your app to.
+- **Confirm changes before deploy**: If set to yes, any change sets will be shown to you before execution for manual review. If set to no, the AWS SAM CLI will automatically deploy application changes.
+- **Allow SAM CLI IAM role creation**: Many AWS SAM templates, including this example, create AWS IAM roles required for the AWS Lambda function(s) included to access AWS services. By default, these are scoped down to minimum required permissions. To deploy an AWS CloudFormation stack which creates or modifies IAM roles, the `CAPABILITY_IAM` value for `capabilities` must be provided. If permission isn't provided through this prompt, to deploy this example you must explicitly pass `--capabilities CAPABILITY_IAM` to the `sam deploy` command.
+- **Save arguments to samconfig.toml**: If set to yes, your choices will be saved to a configuration file inside the project, so that in the future you can just re-run `sam deploy` without parameters to deploy changes to your application.
 
 ### Development Environment Setup
+
 This project is developed and tested on Amazon Linux 2 using AWS Cloud9:
+
 - Bash 4.2
 - Python 3.8
 - Python requirements listed in the
@@ -295,7 +303,7 @@ falicilitate tasks such as:
    Before deploying for the first time, you may need to configure your deployment
    settings using:
 
-   ```
+   ```bash
    sam deploy --guided
    ```
 
@@ -337,6 +345,7 @@ EVENT_FILE=tests/events/lex_v2_cfn_cr/create-bot.json make local-invoke-lex_v2_c
  To debug using Visual Studio Code, cretate a launch task to attach to the
  debugger (example found in the [launch.json](.vscode/launch.json) file under the
  .vscode directory):
+
  ```json
       {
           "name": "Debug SAM Lambda debugpy attach",
