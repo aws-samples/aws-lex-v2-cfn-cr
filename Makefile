@@ -420,7 +420,26 @@ $(LAMBDA_BLACK_TARGETS): $(OUT_DIR)/lint-black-%.txt: $(LAMBDA_FUNCTIONS_DIR)/% 
 lint-black: $(LAMBDA_BLACK_TARGETS)
 .PHONY: lint-black
 
-lint-python: lint-pylint lint-flake8 lint-mypy lint-black
+###
+# bandit
+###
+LAMBDA_BANDIT_TARGETS := $(patsubst \
+	$(LAMBDA_FUNCTIONS_DIR)/%, \
+	$(OUT_DIR)/lint-bandit-%.txt, \
+	$(LAMBDA_FUNCTIONS) \
+)
+$(LAMBDA_BANDIT_TARGETS): $(LAMBDA_FUNCTIONS_SRC_FILES)
+$(LAMBDA_BANDIT_TARGETS): $(OUT_DIR)/lint-bandit-%.txt: $(LAMBDA_FUNCTIONS_DIR)/% | $(OUT_DIR)
+	@echo '[INFO] running bandit on dir: [$(<)]'
+	$(VIRTUALENV_BIN_DIR)/bandit \
+		--recursive \
+		$(<) | \
+		tee '$(@)'
+
+lint-bandit: $(LAMBDA_BANDIT_TARGETS)
+.PHONY: lint-bandit
+
+lint-python: lint-pylint lint-flake8 lint-mypy lint-black lint-bandit
 .PHONY: lint-python
 
 ###

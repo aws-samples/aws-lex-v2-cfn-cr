@@ -6,6 +6,7 @@ pylint~=2.8.3
 yamllint~=1.26.1
 toml>=0.10.2
 mypy~=0.902
+bandit~=1.7.0
 
 # Lambda Layers deps added to virtual environment for development purposes
 # (e.g. IDE and local testing)
