@@ -3,6 +3,7 @@
 
 from datetime import datetime
 import logging
+from time import sleep
 from typing import Any, Dict, List, Optional, TYPE_CHECKING
 
 import boto3
@@ -60,11 +61,42 @@ class Bot:
             logger=self._logger,
         )
 
-    def _build_bot_locale(self, bot_id: str, bot_version: str, locale_id: str) -> None:
-        response = self._client.build_bot_locale(
-            botId=bot_id, botVersion=bot_version, localeId=locale_id
-        )
-        self._logger.debug(response)
+    def _build_bot_locale(
+        self,
+        bot_id: str,
+        bot_version: str,
+        locale_id: str,
+        max_retries: int = 3,
+    ) -> None:
+        # Note that the boto3 client is configured using "standard" retry mode (see client.py)
+        # It provides 3 retries at the client level.
+        # https://boto3.amazonaws.com/v1/documentation/api/latest/guide/retries.html#standard-retry-mode
+        # The retries in the loop below are in addition to the retries at the client level.
+        # The retry loop below is meant to work around concurrent build limits (5)
+        retry_count = 0
+        sleep_retry = self._poll_sleep_time_in_secs
+        while retry_count < max_retries:
+            try:
+                response = self._client.build_bot_locale(
+                    botId=bot_id, botVersion=bot_version, localeId=locale_id
+                )
+                self._logger.debug(response)
+                break
+            except self._client.exceptions.ThrottlingException as exception:
+                retry_count = retry_count + 1
+                if retry_count >= max_retries:
+                    raise exception
+
+                self._logger.warning(
+                    "build request throttled - sleeping for %i seconds - retry count: %i - "
+                    "exception: %s",
+                    sleep_retry,
+                    retry_count,
+                    exception,
+                )
+                sleep(sleep_retry)
+                # exponentially increase sleep time
+                sleep_retry = int(sleep_retry ** retry_count)
 
     def _create_bot(self, resource_properties: Dict[str, Any]) -> str:
         operation = "CreateBot"
