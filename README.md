@@ -7,25 +7,30 @@
 ### Deploy Your Own Stack
 
 Before you can use the Custom Resource, you need to deploy this project in your
-AWS account. There are two ways to deploy this project:
+AWS account. You can deploy this project using the
+[AWS Serverless Application Repository (SAR)](https://aws.amazon.com/serverless/serverlessrepo/)
+or using the [AWS Serverless Application Model Command Line Interface (SAM CLI)](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html).
+Once you deploy it, you can reference the created Lambda function and IAM
+role in your CloudFormation templates. See the [Usage](#usage) section below
+for details on how to use the Custom Resources.
 
-1. Using the [AWS Serverless Application Repository (SAR)](https://aws.amazon.com/serverless/serverlessrepo/)
+Deployment options:
+
+1. Using SAR:
 
     You can deploy this project with this AWS Console
-    [one click link](https://console.aws.amazon.com/lambda/home#/create/app?applicationId=arn:aws:serverlessrepo:us-east-1:506886316466:applications/lex-v2-cfn-cr).
+    [one click link](https://console.aws.amazon.com/lambda/home#/create/app?applicationId=arn:aws:serverlessrepo:us-east-1:777566285978:applications/lex-v2-cfn-cr).
 
-    Once you deploy it, you can reference the Custom Resource stack Lambda
-    function and IAM role in your CloudFormation templates. See the [Usage](#usage)
-    section below.
 
-    Alternatively, you can directly embed the SAR application as a nested stack
-    in your CloudFormation template. See the following snippet or the
+    **Alternatively**, you can directly embed the SAR application as a nested
+    stack in your CloudFormation template. See the following snippet or the
     [examples/zip-code](examples/zip-code) directory for a template that uses
-    this approach.
+    this nested stack approach.
 
-    **NOTE:** Deploying the stack with the link above is preferred in cases
-    where you want a single instance of the Custom Resource to be shared
-    between stacks.
+    **NOTE:** Deploying the stack with the one click SAR link above is preferred
+    over using the nested stack in cases where you want a single instance of the
+    Custom Resource Lambda function to be shared between stacks to avoid
+    duplication.
 
     ```yaml
     Resources:
@@ -37,7 +42,7 @@ AWS account. There are two ways to deploy this project:
         Type: AWS::Serverless::Application
         Properties:
           Location:
-            ApplicationId: arn:aws:serverlessrepo:us-east-1:506886316466:applications/lex-v2-cfn-cr
+            ApplicationId: arn:aws:serverlessrepo:us-east-1:777566285978:applications/lex-v2-cfn-cr
             SemanticVersion: 0.1.0
           Parameters:
             # Custom Resource Lambda log level
@@ -55,8 +60,9 @@ AWS account. There are two ways to deploy this project:
           # that uses this approach
     ```
 
-2. Using the [AWS Serverless Application Model Command Line Interface (SAM CLI)](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html). Clone this repo and issue the following
-commands from a host with the sam cli:
+2. Using the SAM CLI:
+
+   Clone this repo and issue the following commands from a host with the sam cli:
 
     ```bash
     sam build --use-container
@@ -68,25 +74,22 @@ commands from a host with the sam cli:
 
 ### Usage
 
-There are three Custom Resources that work together:
+Once you have deployed the Custom Resource stack as described above, you are
+ready to use it in your own CloudFormation templates. There are three Custom
+Resources that work together:
 
-1. **LexBot:** Deploys a Lex bot incuding associated locales, slot types,
-   intents and slots. Updates are done to the DRAFT version.  It builds all
-   locales after creation/updates
-2. **LexBotVersion:** Creates immutable bot versions from the DRAFT version
+1. **LexBot:** Deploys a Lex bot including associated subresources: locales,
+   slot types, intents and slots. These subresources are managed as a unit with
+   the bot so everything is managed from a single resource. CloudFormation
+   changes are done to the `DRAFT` version of the bot. The Custom Resource
+   automatically builds all locales after successful CloudFormation deployments
+2. **LexBotVersion:** Creates immutable bot versions from the bot `DRAFT`
+   version
 3. **LexBotAlias:** Provisions and manages a bot alias that is pointed to a
    version
 
-The snippett below shows an example of how to use this Custom Resource
-in your CloudFormation templates after your deploy this application.
-
-Generally, the Custom Resource proxies the requests to the corresponding
-Create/Update/Delete operations of the Lex V2 Models API using boto3.
-For details, see the [boto3 Lex V2 Models reference](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/lexv2-models.html)
-
-Note that the attributes with the prefix `CR.` are used as a marker for
-subresources and for cases where the underlying API requires an ID that needs
-to be dynamically resolved.
+The snippett below shows an example of how to use these Custom Resources
+in your CloudFormation templates:
 
 ```yaml
 Parameters:
@@ -96,15 +99,17 @@ Parameters:
       Existing Lex V2 Custom Resource Stack Name. This is used to import the
       Lambda function and IAM role provisioned by the Custom Resource stack
     Type: String
-    # If you deployed via the SAR Console and used the defaults, your repo
+    # If you deployed via the SAR Console and used the defaults, your stack
     # will be named serverlessrepo-lex-v2-cfn-cr. If you deployed manually,
     # make it match the name of your Custom Resource stack
     Default: serverlessrepo-lex-v2-cfn-cr
 
 Resources:
-  # LexBot resource contains bot definition including locales, slot types,
-  # intents and slots. This is deployed to the DRAFT version of the bot
-  # and all locales are built
+  # LexBot resource contains the bot definition and subresources including:
+  # locales, slot types, intents and slots. These subresources use custom
+  # attributes with a name prefix: CR.<subresource name>
+  # The changes are done to the DRAFT version of the bot.
+  # All locales are automatically built
   LexBot:
     Type: Custom::LexBot
     Properties:
@@ -176,8 +181,8 @@ Resources:
     DeletionPolicy: Retain
     # Version number changes between updates which cause a CloudFormation
     # delete event since the version number is the physical resource ID.
-    # The following policies prevents deletion events to keep versions and
-    # speed up updates
+    # The following policies prevents deletion events to retain the bot versions
+    # and speed up updates
     UpdateReplacePolicy: Retain
     Type: Custom::LexBotVersion
     Properties:
@@ -208,6 +213,7 @@ Resources:
       botAliasName: live
       # points to the latest version of the resource above
       botVersion: !Ref LexBotVersion
+      # enable locales under this alias
       botAliasLocaleSettings:
         en_US:
           enabled: True
@@ -230,14 +236,34 @@ Outputs:
     Value: !Ref LexBotAlias
 ```
 
+Generally, the Custom Resources proxy the requests to the corresponding
+Create/Update/Delete operations of the Lex V2 Models API using boto3.
+For details, see the
+[boto3 Lex V2 Models reference](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/lexv2-models.html)
+
+Some attributes of the custom resources use the prefix `CR.` as a marker for
+subresources (e.g. locales, slot types, intents, slots).
+It is also used for cases where the underlying API requires an ID that needs to
+be dynamically resolved and for custom attributes that are not part of the
+Lex APIS.
+
 ## Caveats
 
+- CloudFormation Updates and creation events must complete within the Lambda
+  limit of 15 minutes. This also includes building the Bot locales. This is
+  enough time for the vast majority of bots. The poller functionality of the
+  CrHelper library is not used to extend this time since larger bot definitions
+  can trigger a 8KB limit in the CloudWatch Events input payload
 - If a bot fails to build during a deployment, it may not be able to
   automatically roll back the `DRAFT` version. In that case, you may need to
-  restore the `DRAFT` version manually or from an existing working version
-  (using export/import).
+  restore the `DRAFT` version manually and rebuild before you can update with
+  CloudFormation again. You can also use the Lex export functionality to an get
+  an existing working bot version and restore it into the current `DRAFT`
+  using the Lex import functionality
+- A default fallback intent will be automatically created per locale when you
+  initially deploy the bot. This default fallback intent cannot be modified
+  with this Custom Resource
 - Lex Bot Resource Policies are not implemented
-- Creation and update of the default fallback intent is not supported
 
 ## Development
 
@@ -284,7 +310,7 @@ This project is developed and tested on Amazon Linux 2 using AWS Cloud9:
 - GNU make >= 3.82
 
 This project contains a [Makefile](Makefiles) that can be optionally used to
-falicilitate tasks such as:
+facilitate tasks such as:
 
 1. Create a python virtual environment and install the required dependencies:
 
@@ -328,6 +354,12 @@ falicilitate tasks such as:
     make publish
     ```
 
+6. Delete the stack:
+
+    ```bash
+    make delete-stack
+    ```
+
 ### SAM Local Invoke
 
 To invoke local functions with an event file:
@@ -339,46 +371,47 @@ EVENT_FILE=tests/events/lex_v2_cfn_cr/create-bot.json make local-invoke-lex_v2_c
 
 #### SAM Local Invoke Debug Lambda Functions
 
- To debug inside the container running a Lambda function put `debugpy` as a
- dependency in the function `requirements.txt` under the funtion directory.
+ To interactively debug inside the SAM container running a Lambda function put
+ `debugpy` as a dependency in the `requirements.txt` file under the function directory. That allows to attach a Python debugger to the Lambda function.
 
- To debug using Visual Studio Code, cretate a launch task to attach to the
+ To debug using Visual Studio Code, create a launch task to attach to the
  debugger (example found in the [launch.json](.vscode/launch.json) file under the
  .vscode directory):
 
  ```json
-      {
-          "name": "Debug SAM Lambda debugpy attach",
-          "type": "python",
-          "request": "attach",
-          "port": 5678,
-          "host": "localhost",
-          "pathMappings": [
-              {
-                  "localRoot": "${workspaceFolder}/${relativeFileDirname}",
-                  "remoteRoot": "/var/task"
-              }
-          ],
-      }
+    {
+        "name": "Debug SAM Lambda debugpy attach",
+        "type": "python",
+        "request": "attach",
+        "port": 5678,
+        "host": "localhost",
+        "pathMappings": [
+            {
+                "localRoot": "${workspaceFolder}/${relativeFileDirname}",
+                "remoteRoot": "/var/task"
+            }
+        ],
+    }
   ```
 
  Set the `DEBUGGER` environmental variable. For example, to debug the
- `lex_v2_cfn_cr` function, run the following command:
+ `lex_v2_cfn_cr` function, run the following command (requires debugpy in the
+ function requirements.txt folder):
 
 ```shell
 DEBUGGER=true EVENT_FILE=tests/events/lex_v2_cfn_cr/create-bot.json make local-invoke-lex_v2_cfn_cr
 ```
 
+### Resources
+
+See the [AWS SAM developer guide](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html) for an introduction to SAM specification, the SAM CLI, and serverless application concepts.
+
 ## Cleanup
 
-To delete this application, use the AWS CLI.
+To delete this application, you can use the AWS CLI:
 
   ```bash
   aws cloudformation delete-stack --stack-name '<cloudformation-stack-name>'
   ```
 
  Or [delete the stack using the AWS CloudFormation Console](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-delete-stack.html)
-
-## Resources
-
-See the [AWS SAM developer guide](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html) for an introduction to SAM specification, the SAM CLI, and serverless application concepts.
