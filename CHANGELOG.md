@@ -6,9 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.0] - 2021-06-15
+## [0.1.0] - 2021-06-24
 ### Added
 - Initial release
 
-[Unreleased]: https://github.com/aws-samples/lex-v2-cfn-cr/compare/v0.0.1...develop
-[0.0.1]: https://github.com/aws-samples/lex-v2-cfn-cr/releases/tag/v0.0.1
+[Unreleased]: https://github.com/aws-samples/aws-lex-v2-cfn-cr/compare/v0.1.0...develop
+[0.1.0]: https://github.com/aws-samples/aws-lex-v2-cfn-cr/releases/tag/v0.1.0

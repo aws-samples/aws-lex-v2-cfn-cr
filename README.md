@@ -21,7 +21,6 @@ Deployment options:
     You can deploy this project with this AWS Console
     [one click link](https://console.aws.amazon.com/lambda/home#/create/app?applicationId=arn:aws:serverlessrepo:us-east-1:777566285978:applications/lex-v2-cfn-cr).
 
-
     **Alternatively**, you can directly embed the SAR application as a nested
     stack in your CloudFormation template. See the following snippet or the
     [examples/zip-code](examples/zip-code) directory for a template that uses
@@ -415,3 +414,11 @@ To delete this application, you can use the AWS CLI:
   ```
 
  Or [delete the stack using the AWS CloudFormation Console](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-delete-stack.html)
+
+## Security
+
+See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
+
+## License
+
+This project is licensed under the Apache-2.0 License.

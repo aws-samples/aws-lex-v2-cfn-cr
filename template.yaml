@@ -32,10 +32,10 @@ Metadata:
       - CloudFormation
       - Custom
       - Resource
-    HomePageUrl: https://github.com/aws-samples/lex-v2-cfn-cr
+    HomePageUrl: https://github.com/aws-samples/aws-lex-v2-cfn-cr
     # Keep version in sync with in Description, Mappings and Metadata
     SemanticVersion: 0.1.0
-    SourceCodeUrl: https://github.com/aws-samples/lex-v2-cfn-cr
+    SourceCodeUrl: https://github.com/aws-samples/aws-lex-v2-cfn-cr
 
 Mappings:
   Config:
