@@ -15,6 +15,13 @@ s3_prefix = "sam-artifacts/lex-v2-cfn-cr"
 [default.publish.parameters]
 region = "us-east-1"
 
+[publish-account.package.parameters]
+s3_bucket = "lex-v2-cfn-cr-artifacts-777566285978-us-east-1"
+s3_prefix = "sam-artifacts/lex-v2-cfn-cr"
+
+[publish-account.publish.parameters]
+region = "us-east-1"
+
 [default.deploy.parameters]
 stack_name = "lex-v2-cfn-cr"
 s3_bucket = "lex-v2-cfn-cr-artifacts-506886316466-us-east-1"
