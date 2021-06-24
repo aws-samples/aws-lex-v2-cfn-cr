@@ -47,30 +47,20 @@ except Exception as exception:  # pylint: disable=broad-except
     HELPER.init_failure(exception)
 
 
-@HELPER.poll_create
-def poll_create(event, _):
-    """Poll Create"""
-    resource_type = event["ResourceType"]
-    helper_data = event["CrHelperData"]
-
-    if resource_type == "Custom::LexBot":
-        bot_id = helper_data["botId"]
-        bot_locale_ids = helper_data["botLocaleIds"]
-        LEX_CUSTOM_RESOURCE.build_bot_locales(bot_id=bot_id, bot_locale_ids=bot_locale_ids)
-
-        return bot_id
-
-    if resource_type == "Custom::LexBotVersion":
-        bot_version = helper_data["botVersion"]
-
-        return bot_version
-
-    if resource_type == "Custom::LexBotAlias":
-        bot_alias_id = helper_data["botAliasId"]
-
-        return bot_alias_id
-
-    raise RuntimeError(f"Invalid resource type: {resource_type}")
+def wait_for_bot_locales_build(bot_id, bot_locale_ids):
+    """Waits for bot locales build"""
+    # NOTE: not using the cr helper poller functionality since there's a 8K limit
+    # in the CloudWatch Event input that it uses and medium size bots may trigger
+    # it during updates as the payload includes JSON encoded current and old
+    # resource properties
+    try:
+        LEX_CUSTOM_RESOURCE.build_bot_locales(
+            bot_id=bot_id,
+            bot_locale_ids=bot_locale_ids,
+        )
+    except Exception as exception:  # pylint: disable=broad-except
+        HELPER.Status = "FAILED"
+        HELPER.Reason = str(exception)
 
 
 @HELPER.create
@@ -83,7 +73,18 @@ def create_resource(event, _):
         response = LEX_CUSTOM_RESOURCE.create_bot(resource_properties=resource_properties)
         HELPER.Data = response
 
-        return response["botId"]
+        bot_id = response.get("botId")
+        bot_locale_ids = response.get("botLocaleIds")
+        _exception = response.get("_exception")
+        if bot_id and _exception:
+            # This allows to delete the bot if an exception was raised after
+            # the bot was created. E.g. while creating the locale, intents, slot, etc.
+            HELPER.Status = "FAILED"
+            HELPER.Reason = _exception
+        else:
+            wait_for_bot_locales_build(bot_id=bot_id, bot_locale_ids=bot_locale_ids)
+
+        return bot_id
 
     if resource_type == "Custom::LexBotVersion":
         response = LEX_CUSTOM_RESOURCE.create_bot_version(resource_properties=resource_properties)
@@ -173,32 +174,6 @@ def delete_resource(event, _):
     raise RuntimeError(f"Invalid resource type: {resource_type}")
 
 
-@HELPER.poll_update
-def poll_update(event, _):
-    """Poll Update"""
-    resource_type = event["ResourceType"]
-    helper_data = event["CrHelperData"]
-
-    if resource_type == "Custom::LexBot":
-        bot_id = helper_data["botId"]
-        bot_locale_ids = helper_data["botLocaleIds"]
-        LEX_CUSTOM_RESOURCE.build_bot_locales(bot_id=bot_id, bot_locale_ids=bot_locale_ids)
-
-        return bot_id
-
-    if resource_type == "Custom::LexBotVersion":
-        bot_version = helper_data["botVersion"]
-
-        return bot_version
-
-    if resource_type == "Custom::LexBotAlias":
-        bot_alias_id = helper_data["botAliasId"]
-
-        return bot_alias_id
-
-    raise RuntimeError(f"Invalid resource type: {resource_type}")
-
-
 @HELPER.update
 def update_resource(event, _):
     """Update Resource"""
@@ -215,7 +190,18 @@ def update_resource(event, _):
         )
         HELPER.Data = response
 
-        return response["botId"]
+        bot_id = response.get("botId")
+        bot_locale_ids = response.get("botLocaleIds")
+        _exception = response.get("_exception")
+        if bot_id and _exception:
+            # This allows to delete the bot if an exception was raised after
+            # the bot was created. E.g. while creating the locale, intents, slot, etc.
+            HELPER.Status = "FAILED"
+            HELPER.Reason = _exception
+        else:
+            wait_for_bot_locales_build(bot_id=bot_id, bot_locale_ids=bot_locale_ids)
+
+        return bot_id
 
     if resource_type == "Custom::LexBotVersion":
         # versions are immutable - a new one is created

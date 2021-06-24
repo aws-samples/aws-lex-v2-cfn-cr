@@ -358,19 +358,25 @@ class Bot:
     def create_bot(self, resource_properties: Dict[str, Any]) -> Dict[str, Any]:
         """Create Lex V2 Bot"""
         bot_id = self._create_bot(resource_properties=resource_properties)
-        bot_locales = resource_properties[CUSTOM_ATTRIBUTES["botLocales"]]
 
-        self._create_bot_locales(
-            bot_id=bot_id,
-            bot_locales=bot_locales,
-        )
-
-        bot_locale_ids = [locale["localeId"] for locale in bot_locales]
+        locale_exeption = {"_exception": ""}
+        bot_locale_ids = []
+        try:
+            bot_locales = resource_properties[CUSTOM_ATTRIBUTES["botLocales"]]
+            self._create_bot_locales(
+                bot_id=bot_id,
+                bot_locales=bot_locales,
+            )
+            bot_locale_ids = [locale["localeId"] for locale in bot_locales]
+        except Exception as exception:  # pylint: disable=broad-except
+            self._logger.error("failed to create locale: %s", exception)
+            locale_exeption["_exception"] = str(exception)
 
         return {
             "botId": bot_id,
             "botLocaleIds": bot_locale_ids,
             "lastUpdatedDateTime": datetime.now().isoformat(),
+            **locale_exeption,
         }
 
     def delete_bot(self, bot_id: str) -> None:
@@ -403,16 +409,23 @@ class Bot:
             old_resource_properties=old_resource_properties,
         )
 
-        bot_locale_ids = self._update_bot_locales(
-            bot_id=_bot_id,
-            resource_properties=resource_properties,
-            old_resource_properties=old_resource_properties,
-        )
+        locale_exeption = {"_exception": ""}
+        bot_locale_ids = []
+        try:
+            bot_locale_ids = self._update_bot_locales(
+                bot_id=_bot_id,
+                resource_properties=resource_properties,
+                old_resource_properties=old_resource_properties,
+            )
+        except Exception as exception:  # pylint: disable=broad-except
+            self._logger.error("failed to create locale: %s", exception)
+            locale_exeption["_exception"] = str(exception)
 
         return {
             "botId": _bot_id,
             "botLocaleIds": bot_locale_ids,
             "lastUpdatedDateTime": datetime.now().isoformat(),
+            **locale_exeption,
         }
 
     def wait_for_delete_bot(
