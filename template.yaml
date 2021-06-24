@@ -22,7 +22,7 @@ Metadata:
   AWS::ServerlessRepo::Application:
     Name: lex-v2-cfn-cr
     Description: Amazon Lex V2 CloudFormation Custom Resource
-    Author: AWS Lex
+    Author: AWS Lex SA Team
     ReadmeUrl: README.md
     SpdxLicenseId: Apache-2.0
     LicenseUrl: LICENSE
