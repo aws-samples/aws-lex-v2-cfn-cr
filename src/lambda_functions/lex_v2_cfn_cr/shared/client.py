@@ -24,7 +24,9 @@ from .logger import get_logger
 LOGGER = get_logger(__name__)
 
 CLIENT_CONFIG = Config(
-    retries={"mode": "standard"},
+    # this helps to reduce exceptions when deploying many bots (> 10) at the same time
+    # adaptive mode is considered "experimental" so it should be tested when updating boto3
+    retries={"mode": "adaptive", "max_attempts": 10},
     **json.loads(getenv("AWS_SDK_USER_AGENT", "{}")),
 )
 

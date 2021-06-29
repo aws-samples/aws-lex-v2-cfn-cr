@@ -17,6 +17,7 @@
 
 from datetime import datetime
 import logging
+from random import random
 from time import sleep
 from typing import Any, Dict, List, Optional, TYPE_CHECKING
 
@@ -80,13 +81,14 @@ class Bot:
         bot_id: str,
         bot_version: str,
         locale_id: str,
-        max_retries: int = 3,
+        max_retries: int = 30,
+        sleep_jitter_base_in_seconds: int = 30,
     ) -> None:
         # Note that the boto3 client is configured using "standard" retry mode (see client.py)
         # It provides 3 retries at the client level.
         # https://boto3.amazonaws.com/v1/documentation/api/latest/guide/retries.html#standard-retry-mode
-        # The retries in the loop below are in addition to the retries at the client level.
-        # The retry loop below is meant to work around concurrent build limits (5)
+        # The retry loop below is meant to work around concurrent build limits (5) which may not be
+        # convered by the boto3 client retries
         retry_count = 0
         sleep_retry = self._poll_sleep_time_in_secs
         while retry_count < max_retries:
@@ -96,11 +98,20 @@ class Bot:
                 )
                 self._logger.debug(response)
                 break
-            except self._client.exceptions.ThrottlingException as exception:
+            except (
+                self._client.exceptions.ThrottlingException,
+                self._client.exceptions.ServiceQuotaExceededException,
+            ) as exception:
                 retry_count = retry_count + 1
                 if retry_count >= max_retries:
                     raise exception
 
+                # linear sleep with random jitter
+                sleep_retry = int(
+                    self._poll_sleep_time_in_secs
+                    + ((random() * retry_count))  # nosec
+                    + (random() * sleep_jitter_base_in_seconds)  # nosec
+                )
                 self._logger.warning(
                     "build request throttled - sleeping for %i seconds - retry count: %i - "
                     "exception: %s",
@@ -108,9 +119,8 @@ class Bot:
                     retry_count,
                     exception,
                 )
+
                 sleep(sleep_retry)
-                # exponentially increase sleep time
-                sleep_retry = int(sleep_retry ** retry_count)
 
     def _create_bot(self, resource_properties: Dict[str, Any]) -> str:
         operation = "CreateBot"
@@ -408,6 +418,45 @@ class Bot:
         )
 
         self._client.delete_bot(**operation_parameters)
+
+    def get_bot_id(
+        self,
+        bot_name: str,
+    ) -> str:
+        """Get Bot ID from a Bot Name"""
+        list_bots_args: Dict[str, Any] = dict(
+            filters=[
+                {
+                    "name": "BotName",
+                    "values": [bot_name],
+                    "operator": "EQ",
+                }
+            ],
+            sortBy={
+                "attribute": "BotName",
+                "order": "Ascending",
+            },
+        )
+        while True:
+            response = self._client.list_bots(**list_bots_args)
+            self._logger.debug(response)
+
+            bot_summaries = response["botSummaries"]
+            bot_id = bot_summaries[0]["botId"] if bot_summaries else ""
+
+            if bot_id:
+                break
+
+            next_token = response.get("nextToken")
+            if next_token:
+                list_bots_args["nextToken"] = next_token
+            else:
+                break
+
+        if not bot_id:
+            self._logger.warning("could not find bot named: %s", bot_name)
+
+        return bot_id
 
     def update_bot(
         self,

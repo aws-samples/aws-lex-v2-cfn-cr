@@ -3,14 +3,14 @@ AWSTemplateFormatVersion: 2010-09-09
 Transform: AWS::Serverless-2016-10-31
 # Keep version in sync with in Description, Mappings and Metadata
 Description: >-
-  Lex V2 CloudFormation Custom Resource (0.1.0)
+  Lex V2 CloudFormation Custom Resource (0.2.0)
 
 Parameters:
   LogLevel:
     Description: >-
       Custom Resource Lambda log level
     Type: String
-    Default: INFO
+    Default: DEBUG
     AllowedValues:
       - CRITICAL
       - ERROR
@@ -34,7 +34,7 @@ Metadata:
       - Resource
     HomePageUrl: https://github.com/aws-samples/aws-lex-v2-cfn-cr
     # Keep version in sync with in Description, Mappings and Metadata
-    SemanticVersion: 0.1.0
+    SemanticVersion: 0.2.0
     SourceCodeUrl: https://github.com/aws-samples/aws-lex-v2-cfn-cr
 
 Mappings:
@@ -42,7 +42,7 @@ Mappings:
     Application:
       Name: LexV2CfnCr
       # Keep version in sync with in Description, Mappings and Metadata
-      Version: 0.1.0
+      Version: 0.2.0
 
 ##########################################################################
 # SAM Globals
@@ -119,7 +119,6 @@ Resources:
                   - lex:UpdateBot
                   - lex:UpdateBotAlias
                   - lex:UpdateBotLocale
-                  - lex:UpdateBotVersion
                   - lex:UpdateIntent
                   - lex:UpdateSlot
                   - lex:UpdateSlotType
@@ -128,6 +127,11 @@ Resources:
                           ${AWS::AccountId}:bot/*"
                   - !Sub "arn:${AWS::Partition}:lex:${AWS::Region}:\
                           ${AWS::AccountId}:bot-alias/*"
+              # ListBots should be enable on "*"
+              - Effect: Allow
+                Action:
+                  - lex:ListBots
+                Resource: "*"
         # Custom Resource needs to pass an IAM service linked role
         - PolicyName: PassRole
           PolicyDocument:
