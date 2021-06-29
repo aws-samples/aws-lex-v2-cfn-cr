@@ -16,7 +16,7 @@ Parameters:
     Description: >-
       Semantic version of SAR Lex CloudFormation Custom Resource application
     Type: String
-    Default: 0.1.0
+    Default: 0.2.0
 
 Resources:
   # this deploys the Custom Resource as a nested CloudFormation stack
