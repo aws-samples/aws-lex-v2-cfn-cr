@@ -61,6 +61,7 @@ def wait_for_bot_locales_build(bot_id, bot_locale_ids):
     except Exception as exception:  # pylint: disable=broad-except
         HELPER.Status = "FAILED"
         HELPER.Reason = str(exception)
+        HELPER.PhysicalResourceId = bot_id
 
 
 @HELPER.create
@@ -81,6 +82,7 @@ def create_resource(event, _):
             # the bot was created. E.g. while creating the locale, intents, slot, etc.
             HELPER.Status = "FAILED"
             HELPER.Reason = _exception
+            HELPER.PhysicalResourceId = bot_id
         else:
             wait_for_bot_locales_build(bot_id=bot_id, bot_locale_ids=bot_locale_ids)
 
@@ -136,7 +138,26 @@ def delete_resource(event, _):
     resource_properties = event["ResourceProperties"]
 
     if resource_type == "Custom::LexBot":
-        bot_id = event["PhysicalResourceId"]
+        physical_resource_id = event.get("PhysicalResourceId", "")
+        # Handle resource cancellation deletes during creation and cases where CloudFormation
+        # passes a system generated PhysicalResourceId which is not a botId.
+        # Valid Bot IDs are a fixed lenght of 10 alphanumeric characters:
+        # https://docs.aws.amazon.com/lexv2/latest/dg/API_CreateBot.html#lexv2-CreateBot-response-botId
+        if (
+            not physical_resource_id
+            or not physical_resource_id.isalnum()
+            or len(physical_resource_id) != 10
+        ):
+            bot_name = resource_properties.get("botName", "")
+            LOGGER.warning(
+                "unable to find a valid Physical Resource ID - "
+                "trying to obtain it from the resource properties botName: %s",
+                bot_name,
+            )
+            bot_id = LEX_CUSTOM_RESOURCE.get_bot_id(bot_name=bot_name)
+        else:
+            bot_id = physical_resource_id
+
         HELPER.Data["botId"] = bot_id
 
         if bot_id:
@@ -198,6 +219,7 @@ def update_resource(event, _):
             # the bot was created. E.g. while creating the locale, intents, slot, etc.
             HELPER.Status = "FAILED"
             HELPER.Reason = _exception
+            HELPER.PhysicalResourceId = bot_id
         else:
             wait_for_bot_locales_build(bot_id=bot_id, bot_locale_ids=bot_locale_ids)
 

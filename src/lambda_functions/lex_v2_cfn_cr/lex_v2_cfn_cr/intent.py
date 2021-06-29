@@ -306,7 +306,7 @@ class Intent:
         intent_name: str,
     ) -> str:
         """Get Intent Id from Name"""
-        response = self._client.list_intents(
+        list_intents_args: Dict[str, Any] = dict(
             botId=bot_id,
             botVersion=bot_version,
             localeId=locale_id,
@@ -317,11 +317,29 @@ class Intent:
                     "operator": "EQ",
                 }
             ],
+            sortBy={
+                "attribute": "IntentName",
+                "order": "Ascending",
+            },
         )
-        self._logger.debug(response)
+        while True:
+            response = self._client.list_intents(**list_intents_args)
+            self._logger.debug(response)
 
-        intent_summaries = response["intentSummaries"]
-        intent_id = intent_summaries[0]["intentId"] if intent_summaries else ""
+            intent_summaries = response["intentSummaries"]
+            intent_id = intent_summaries[0]["intentId"] if intent_summaries else ""
+
+            if intent_id:
+                break
+
+            next_token = response.get("nextToken")
+            if next_token:
+                list_intents_args["nextToken"] = next_token
+            else:
+                break
+
+        if not intent_id:
+            self._logger.warning("could not find intent named: %s", intent_name)
 
         return intent_id
 

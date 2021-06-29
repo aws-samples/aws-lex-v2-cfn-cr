@@ -119,7 +119,6 @@ Resources:
                   - lex:UpdateBot
                   - lex:UpdateBotAlias
                   - lex:UpdateBotLocale
-                  - lex:UpdateBotVersion
                   - lex:UpdateIntent
                   - lex:UpdateSlot
                   - lex:UpdateSlotType
@@ -128,6 +127,11 @@ Resources:
                           ${AWS::AccountId}:bot/*"
                   - !Sub "arn:${AWS::Partition}:lex:${AWS::Region}:\
                           ${AWS::AccountId}:bot-alias/*"
+              # ListBots should be enable on "*"
+              - Effect: Allow
+                Action:
+                  - lex:ListBots
+                Resource: "*"
         # Custom Resource needs to pass an IAM service linked role
         - PolicyName: PassRole
           PolicyDocument:

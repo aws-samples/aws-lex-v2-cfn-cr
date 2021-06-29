@@ -409,6 +409,45 @@ class Bot:
 
         self._client.delete_bot(**operation_parameters)
 
+    def get_bot_id(
+        self,
+        bot_name: str,
+    ) -> str:
+        """Get Bot ID from a Bot Name"""
+        list_bots_args: Dict[str, Any] = dict(
+            filters=[
+                {
+                    "name": "BotName",
+                    "values": [bot_name],
+                    "operator": "EQ",
+                }
+            ],
+            sortBy={
+                "attribute": "BotName",
+                "order": "Ascending",
+            },
+        )
+        while True:
+            response = self._client.list_bots(**list_bots_args)
+            self._logger.debug(response)
+
+            bot_summaries = response["botSummaries"]
+            bot_id = bot_summaries[0]["botId"] if bot_summaries else ""
+
+            if bot_id:
+                break
+
+            next_token = response.get("nextToken")
+            if next_token:
+                list_bots_args["nextToken"] = next_token
+            else:
+                break
+
+        if not bot_id:
+            self._logger.warning("could not find bot named: %s", bot_name)
+
+        return bot_id
+
     def update_bot(
         self,
         bot_id: str,

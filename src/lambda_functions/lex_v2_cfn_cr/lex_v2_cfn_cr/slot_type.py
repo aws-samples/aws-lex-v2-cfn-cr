@@ -56,7 +56,7 @@ class SlotType:
         if slot_type_name.startswith("AMAZON."):
             return slot_type_name
 
-        response = self._client.list_slot_types(
+        list_slot_types_args: Dict[str, Any] = dict(
             botId=bot_id,
             botVersion=bot_version,
             localeId=locale_id,
@@ -67,11 +67,30 @@ class SlotType:
                     "operator": "EQ",
                 }
             ],
+            sortBy={
+                "attribute": "SlotTypeName",
+                "order": "Ascending",
+            },
         )
-        self._logger.debug(response)
 
-        slot_type_summaries = response["slotTypeSummaries"]
-        slot_type_id = slot_type_summaries[0]["slotTypeId"] if slot_type_summaries else ""
+        while True:
+            response = self._client.list_slot_types(**list_slot_types_args)
+            self._logger.debug(response)
+
+            slot_type_summaries = response["slotTypeSummaries"]
+            slot_type_id = slot_type_summaries[0]["slotTypeId"] if slot_type_summaries else ""
+
+            if slot_type_id:
+                break
+
+            next_token = response.get("nextToken")
+            if next_token:
+                list_slot_types_args["nextToken"] = next_token
+            else:
+                break
+
+        if not slot_type_id:
+            self._logger.warning("could not find slot type named: %s", slot_type_id)
 
         return slot_type_id
 

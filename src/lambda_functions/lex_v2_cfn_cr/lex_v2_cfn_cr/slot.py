@@ -54,7 +54,7 @@ class Slot:
         slot_name: str,
     ) -> str:
         """Get Slot ID from Name"""
-        response = self._client.list_slots(
+        list_slots_args: Dict[str, Any] = dict(
             botId=bot_id,
             botVersion=bot_version,
             localeId=locale_id,
@@ -66,11 +66,29 @@ class Slot:
                     "operator": "EQ",
                 }
             ],
+            sortBy={
+                "attribute": "SlotName",
+                "order": "Ascending",
+            },
         )
-        self._logger.debug(response)
+        while True:
+            response = self._client.list_slots(**list_slots_args)
+            self._logger.debug(response)
 
-        slot_summaries = response["slotSummaries"]
-        slot_id = slot_summaries[0]["slotId"] if slot_summaries else ""
+            slot_summaries = response["slotSummaries"]
+            slot_id = slot_summaries[0]["slotId"] if slot_summaries else ""
+
+            if slot_id:
+                break
+
+            next_token = response.get("nextToken")
+            if next_token:
+                list_slots_args["nextToken"] = next_token
+            else:
+                break
+
+        if not slot_id:
+            self._logger.warning("could not find slot named: %s", slot_id)
 
         return slot_id
 

@@ -124,6 +124,13 @@ class LexV2CustomResource:
         """Delete Bot Alias"""
         self._bot_alias_manager.delete_bot_alias(bot_id=bot_id, bot_alias_id=bot_alias_id)
 
+    def get_bot_id(
+        self,
+        bot_name: str,
+    ) -> str:
+        """Get Bot ID from a Bot Name"""
+        return self._bot_manager.get_bot_id(bot_name=bot_name)
+
     def wait_for_delete_bot(
         self,
         bot_id: str,
