@@ -6,14 +6,26 @@ Description:
   Sample Lex V2 Zip Code Bot using the CloudFormation Custom Resource from an
   Serverless Application Repository (SAR) nested stack
 
+Parameters:
+  SarAppArn:
+    Description: >-
+      ARN of SAR Lex CloudFormation Custom Resource application
+    Type: String
+    Default: arn:aws:serverlessrepo:us-east-1:777566285978:applications/lex-v2-cfn-cr
+  SarAppVersion:
+    Description: >-
+      Semantic version of SAR Lex CloudFormation Custom Resource application
+    Type: String
+    Default: 0.1.0
+
 Resources:
   # this deploys the Custom Resource as a nested CloudFormation stack
   LexV2CfnCr:
     Type: AWS::Serverless::Application
     Properties:
       Location:
-        ApplicationId: arn:aws:serverlessrepo:us-east-1:506886316466:applications/lex-v2-cfn-cr
-        SemanticVersion: 0.1.0
+        ApplicationId: !Ref SarAppArn
+        SemanticVersion: !Ref SarAppVersion
       Parameters:
         # Custom Resource Lambda log level
         LogLevel: DEBUG
