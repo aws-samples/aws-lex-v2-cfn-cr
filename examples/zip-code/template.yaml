@@ -16,7 +16,7 @@ Parameters:
     Description: >-
       Semantic version of SAR Lex CloudFormation Custom Resource application
     Type: String
-    Default: 0.2.0
+    Default: 0.3.0
 
 Resources:
   # this deploys the Custom Resource as a nested CloudFormation stack
@@ -55,6 +55,16 @@ Resources:
                 regexFilter:
                   pattern: '[0-9]{8}'
           CR.intents:
+            # The Fallback intent is automatically created by the Lex service
+            # This will update the default fallback intent
+            - intentName: FallbackIntent
+              description: Default fallback intent when no other intent matches
+              intentClosingSetting:
+                closingResponse:
+                  messageGroups:
+                    - message:
+                        plainTextMessage:
+                          value: Sorry I am having trouble understanding.
             - intentName: UpdateZipCode
               sampleUtterances:
                 - utterance: i want to change my zip code

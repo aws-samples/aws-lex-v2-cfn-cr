@@ -42,7 +42,7 @@ Deployment options:
         Properties:
           Location:
             ApplicationId: arn:aws:serverlessrepo:us-east-1:777566285978:applications/lex-v2-cfn-cr
-            SemanticVersion: 0.2.0
+            SemanticVersion: 0.3.0
           Parameters:
             # Custom Resource Lambda log level
             LogLevel: 'INFO'
@@ -172,6 +172,16 @@ Resources:
                               value: What is your zipcode?
                       maxRetries: 2
                       allowInterrupt: true
+            # The Fallback intent is automatically created by the Lex service
+            # This will update the default fallback intent
+            - intentName: FallbackIntent
+              description: Default fallback intent when no other intent matches
+              intentClosingSetting:
+                closingResponse:
+                  messageGroups:
+                    - message:
+                        plainTextMessage:
+                          value: Sorry I am having trouble understanding.
 
   # Creates an immutable Bot Version
   LexBotVersion:
@@ -248,7 +258,7 @@ Lex APIS.
 
 ## Caveats
 
-- CloudFormation Updates and creation events must complete within the Lambda
+- CloudFormation update and creation events must complete within the Lambda
   limit of 15 minutes. This also includes building the Bot locales. This is
   enough time for the vast majority of bots. The poller functionality of the
   CrHelper library is not used to extend this time since larger bot definitions
@@ -259,9 +269,6 @@ Lex APIS.
   CloudFormation again. You can also use the Lex export functionality to an get
   an existing working bot version and restore it into the current `DRAFT`
   using the Lex import functionality
-- A default fallback intent will be automatically created per locale when you
-  initially deploy the bot. This default fallback intent cannot be modified
-  with this Custom Resource
 - Lex Bot Resource Policies are not implemented
 
 ## Development

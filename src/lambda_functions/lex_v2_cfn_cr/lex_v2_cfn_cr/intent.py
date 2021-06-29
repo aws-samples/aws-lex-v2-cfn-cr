@@ -347,6 +347,19 @@ class Intent:
         self, input_parameters: Dict[str, Any]
     ) -> Union[CreateIntentResponseTypeDef, UpdateIntentResponseTypeDef]:
         """Create Intent"""
+        intent_name = input_parameters.get("intentName")
+        # fallback intent is automatically created with the locale and can only
+        # be updated. The intent has a fixed ID: "FALLBCKINT"
+        # It does not contain slots
+        if intent_name == "FallbackIntent":
+            return self._update_intent(
+                input_parameters={
+                    "intentId": "FALLBCKINT",
+                    "parentIntentSignature": "AMAZON.FallbackIntent",
+                    **input_parameters,
+                }
+            )
+
         response = self._create_intent(input_parameters=input_parameters)
         bot_id = response["botId"]
         bot_version = response["botVersion"]
@@ -377,6 +390,14 @@ class Intent:
     def delete_intent(self, input_parameters: Dict[str, Any]) -> None:
         """Delete Intent"""
         operation = "DeleteIntent"
+        intent_id = input_parameters.get("intentId")
+        # fallback intent is automatically created with the locale and can only
+        # be updated - not deleted. The intent has a fixed ID: "FALLBCKINT"
+        # ignoring deletes to avoid failures
+        if intent_id == "FALLBCKINT":
+            self._logger.warning("attempted to delete fallback intent - ignoring")
+            return
+
         operation_parameters = get_api_parameters(
             operation=operation,
             input_parameters=input_parameters,
@@ -403,6 +424,15 @@ class Intent:
             "intentId": intent_id,
             **intent,
         }
+        intent_name = intent.get("intentName")
+        if intent_name == "FallbackIntent":
+            return self._update_intent(
+                input_parameters={
+                    "parentIntentSignature": "AMAZON.FallbackIntent",
+                    **input_parameters,
+                }
+            )
+
         old_slots = (
             old_intent[CUSTOM_ATTRIBUTES["slots"]]
             if CUSTOM_ATTRIBUTES["slots"] in old_intent
