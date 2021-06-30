@@ -1,0 +1,15 @@
+# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-config.html
+# https://aws.amazon.com/blogs/compute/optimizing-serverless-development-with-samconfig/
+
+version=0.1
+[default.deploy.parameters]
+stack_name = "lex-v2-cfn-cr-banker-bot"
+s3_bucket = "lex-v2-cfn-cr-artifacts-506886316466-us-east-1"
+s3_prefix = "sam-artifacts/lex-v2-cfn-banker-bot"
+region = "us-east-1"
+fail_on_empty_changeset = false
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM CAPABILITY_AUTO_EXPAND"
+parameter_overrides = """
+  LexV2CfnCrStackName=lex-v2-cfn-cr \
+"""

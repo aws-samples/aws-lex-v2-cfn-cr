@@ -3,7 +3,7 @@ AWSTemplateFormatVersion: 2010-09-09
 Transform: AWS::Serverless-2016-10-31
 # Keep version in sync with in Description, Mappings and Metadata
 Description: >-
-  Lex V2 CloudFormation Custom Resource (0.2.0)
+  Lex V2 CloudFormation Custom Resource (0.3.0)
 
 Parameters:
   LogLevel:
@@ -34,7 +34,7 @@ Metadata:
       - Resource
     HomePageUrl: https://github.com/aws-samples/aws-lex-v2-cfn-cr
     # Keep version in sync with in Description, Mappings and Metadata
-    SemanticVersion: 0.2.0
+    SemanticVersion: 0.3.0
     SourceCodeUrl: https://github.com/aws-samples/aws-lex-v2-cfn-cr
 
 Mappings:
@@ -42,7 +42,7 @@ Mappings:
     Application:
       Name: LexV2CfnCr
       # Keep version in sync with in Description, Mappings and Metadata
-      Version: 0.2.0
+      Version: 0.3.0
 
 ##########################################################################
 # SAM Globals
