@@ -270,6 +270,11 @@ Lex APIS.
   an existing working bot version and restore it into the current `DRAFT`
   using the Lex import functionality
 - Lex Bot Resource Policies are not implemented
+- The Custom Resource stack deploys a regular IAM Role instead of an IAM Service
+  Linked Role to be used with the Lex Bot. The SAR service does not currently
+  [support](https://docs.aws.amazon.com/serverlessrepo/latest/devguide/list-supported-resources.html)
+  Service Linked Roles. We may change this if support is added. You can create
+  your own Service Linked Role separately and use it in your template
 
 ## Development
 

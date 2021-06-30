@@ -8,7 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.3.0] - 2021-06-30
 ### Added
-- Support for FallbackIntent
+- Support to update the Fallback Intent
+- Example bot based on the [AWS Workshop](https://amazonlex.workshop.aws/) to
+  illustrate how to configure Lambda CodeHooks and Conversation Logs
 
 ## [0.2.0] - 2021-06-29
 ### Added
