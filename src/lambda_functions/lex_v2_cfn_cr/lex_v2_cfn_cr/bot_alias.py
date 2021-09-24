@@ -21,7 +21,10 @@ from typing import Any, Dict, Optional, TYPE_CHECKING
 import boto3
 
 from .shared.api import get_api_parameters, wait_for_operation
-from .shared.constants import DEFAULT_POLL_SLEEP_TIME_IN_SECS
+from .shared.constants import (
+    DEFAULT_POLL_SLEEP_TIME_IN_SECS,
+    DRAFT_VERSION,
+)
 
 if TYPE_CHECKING:
     from mypy_boto3_lexv2_models import LexModelsV2Client
@@ -70,6 +73,16 @@ class BotAlias:
         resource_properties: Dict[str, Any],
     ) -> Dict[str, Any]:
         """Create Bot Alias"""
+        alias_name = resource_properties.get("botAliasName")
+        # TestBotAlias is automatically created with the bot and can only
+        # be updated. The alias has a fixed ID: "TSTALIASID"
+        if alias_name == "TestBotAlias":
+            return self.update_bot_alias(
+                bot_alias_id="TSTALIASID",
+                resource_properties=resource_properties,
+                old_resource_properties={},
+            )
+
         operation = "CreateBotAlias"
         operation_parameters = get_api_parameters(
             operation=operation,
@@ -95,6 +108,10 @@ class BotAlias:
     def delete_bot_alias(self, bot_id: str, bot_alias_id: str) -> DeleteBotAliasResponseTypeDef:
         """Delete Bot Alias"""
         operation = "DeleteBotAlias"
+        if bot_alias_id == "TSTALIASID":
+            self._logger.warning("attempted to delete TestBotAlias - ignoring")
+            return
+
         input_parameters = dict(
             botId=bot_id,
             botAliasId=bot_alias_id,
@@ -118,6 +135,14 @@ class BotAlias:
         """Update Bot Alias"""
         operation = "UpdateBotAlias"
         input_parameters = {"botAliasId": bot_alias_id, **resource_properties}
+        alias_name = resource_properties.get("botAliasName")
+        # TestBotAlias is automatically created with the bot and can only
+        # be updated. The alias has a fixed ID: "TSTALIASID". Only the DRAFT
+        # version can be assigned.
+        if alias_name == "TestBotAlias":
+            bot_alias_id = "TSTALIASID"
+            input_parameters["botVersion"] = DRAFT_VERSION
+
         operation_parameters = get_api_parameters(
             operation=operation,
             input_parameters=input_parameters,
