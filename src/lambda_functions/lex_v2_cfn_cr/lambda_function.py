@@ -104,6 +104,7 @@ def create_resource(event, _):
 
     raise RuntimeError(f"Invalid resource type: {resource_type}")
 
+
 @HELPER.delete
 def delete_resource(event, _):
     """Delete Resource"""
@@ -157,7 +158,9 @@ def delete_resource(event, _):
         if bot_alias_id and bot_id:
             try:
                 LEX_CUSTOM_RESOURCE.delete_bot_alias(bot_id=bot_id, bot_alias_id=bot_alias_id)
-                LEX_CUSTOM_RESOURCE.wait_for_delete_bot_alias(bot_id=bot_id, bot_alias_id=bot_alias_id)
+                LEX_CUSTOM_RESOURCE.wait_for_delete_bot_alias(
+                    bot_id=bot_id, bot_alias_id=bot_alias_id
+                )
             except CLIENT.exceptions.PreconditionFailedException:
                 LOGGER.info(
                     "Bot alias does not exist - bot_id: %s - bot_alias_id: %s",
