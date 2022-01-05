@@ -2,6 +2,8 @@
 
 > An Amazon Lex V2 CloudFormation [Custom Resource](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-custom-resources.html)
 
+**NOTE:** this project has been deprecated. [Amazon Lex now supports AWS CloudFormation](https://aws.amazon.com/about-aws/whats-new/2021/12/amazon-lex-aws-cloudformation/).
+
 ## Quick Start
 
 ### Deploy Your Own Stack
