@@ -105,32 +105,6 @@ def create_resource(event, _):
     raise RuntimeError(f"Invalid resource type: {resource_type}")
 
 
-@HELPER.poll_delete
-def poll_delete(event, _):
-    """Poll Delete"""
-    resource_type = event["ResourceType"]
-    helper_data = event["CrHelperData"]
-
-    if resource_type == "Custom::LexBot":
-        bot_id = helper_data.get("botId")
-        if bot_id:
-            LEX_CUSTOM_RESOURCE.wait_for_delete_bot(bot_id=bot_id)
-
-        return True
-
-    if resource_type == "Custom::LexBotVersion":
-        return True
-
-    if resource_type == "Custom::LexBotAlias":
-        bot_id = helper_data.get("botId")
-        bot_alias_id = helper_data.get("botAliasId")
-        if bot_id and bot_alias_id:
-            LEX_CUSTOM_RESOURCE.wait_for_delete_bot_alias(bot_id=bot_id, bot_alias_id=bot_alias_id)
-        return True
-
-    raise RuntimeError(f"Invalid resource type: {resource_type}")
-
-
 @HELPER.delete
 def delete_resource(event, _):
     """Delete Resource"""
@@ -163,6 +137,7 @@ def delete_resource(event, _):
         if bot_id:
             try:
                 LEX_CUSTOM_RESOURCE.delete_bot(bot_id=bot_id)
+                LEX_CUSTOM_RESOURCE.wait_for_delete_bot(bot_id=bot_id)
             except CLIENT.exceptions.PreconditionFailedException:
                 LOGGER.info("Bot does not exist - bot_id: %s", bot_id)
 
@@ -183,6 +158,9 @@ def delete_resource(event, _):
         if bot_alias_id and bot_id:
             try:
                 LEX_CUSTOM_RESOURCE.delete_bot_alias(bot_id=bot_id, bot_alias_id=bot_alias_id)
+                LEX_CUSTOM_RESOURCE.wait_for_delete_bot_alias(
+                    bot_id=bot_id, bot_alias_id=bot_alias_id
+                )
             except CLIENT.exceptions.PreconditionFailedException:
                 LOGGER.info(
                     "Bot alias does not exist - bot_id: %s - bot_alias_id: %s",
