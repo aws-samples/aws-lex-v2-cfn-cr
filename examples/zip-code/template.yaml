@@ -42,19 +42,19 @@ Resources:
       idleSessionTTLInSeconds: 300
       # this references the role created by the Custom Resource stack
       roleArn: !GetAtt LexV2CfnCr.Outputs.LexServiceLinkedRole
-      CR.botLocales:
+      CR_botLocales:
         - localeId: en_US
           nluIntentConfidenceThreshold: 0.40
           voiceSettings:
             voiceId: Salli
-          CR.slotTypes:
+          CR_slotTypes:
             - slotTypeName: ZipCodeType
               parentSlotTypeSignature: AMAZON.AlphaNumeric
               valueSelectionSetting:
                 resolutionStrategy: OriginalValue
                 regexFilter:
                   pattern: '[0-9]{8}'
-          CR.intents:
+          CR_intents:
             # The Fallback intent is automatically created by the Lex service
             # This will update the default fallback intent
             - intentName: FallbackIntent
@@ -70,9 +70,9 @@ Resources:
                 - utterance: i want to change my zip code
                 - utterance: i have a new zip code
                 - utterance: my new zip code is {ZipCode}
-              CR.slots:
+              CR_slots:
                 - slotName: ZipCode
-                  CR.slotTypeName: ZipCodeType
+                  CR_slotTypeName: ZipCodeType
                   valueElicitationSetting:
                     slotConstraint: Required
                     promptSpecification:
@@ -94,8 +94,8 @@ Resources:
     Properties:
       ServiceToken: !GetAtt LexV2CfnCr.Outputs.LexV2CfnCrFunctionArn
       botId: !Ref LexBot
-      CR.botLocaleIds: !GetAtt LexBot.botLocaleIds
-      CR.lastUpdatedDateTime: !GetAtt LexBot.lastUpdatedDateTime
+      CR_botLocaleIds: !GetAtt LexBot.botLocaleIds
+      CR_lastUpdatedDateTime: !GetAtt LexBot.lastUpdatedDateTime
 
   LexBotAlias:
     # Alias is deleted by the Bot on Stack Deletions

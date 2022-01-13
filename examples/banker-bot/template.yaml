@@ -87,12 +87,12 @@ Resources:
       roleArn:
         !ImportValue
           Fn::Sub: "${LexV2CfnCrStackName}-LexServiceLinkedRole"
-      CR.botLocales:
+      CR_botLocales:
         - localeId: en_US
           nluIntentConfidenceThreshold: 0.40
           voiceSettings:
             voiceId: Ivy
-          CR.slotTypes:
+          CR_slotTypes:
             - slotTypeName: accountType
               valueSelectionSetting:
                 resolutionStrategy: TopResolution
@@ -109,7 +109,7 @@ Resources:
                     - value: mastercard
                     - value: amex
                     - value: american express
-          CR.intents:
+          CR_intents:
             - intentName: FallbackIntent
               description: Default fallback intent when no other intent matches
               intentClosingSetting:
@@ -154,9 +154,9 @@ Resources:
                 - name: contextCheckBalance
                   timeToLiveInSeconds: 90
                   turnsToLive: 5
-              CR.slots:
+              CR_slots:
                 - slotName: accountType
-                  CR.slotTypeName: accountType
+                  CR_slotTypeName: accountType
                   valueElicitationSetting:
                     slotConstraint: Required
                     promptSpecification:
@@ -167,7 +167,7 @@ Resources:
                                 For which account would you like your balance?
                       maxRetries: 2
                 - slotName: dateOfBirth
-                  CR.slotTypeName: AMAZON.Date
+                  CR_slotTypeName: AMAZON.Date
                   valueElicitationSetting:
                     slotConstraint: Required
                     promptSpecification:
@@ -190,9 +190,9 @@ Resources:
                 enabled: True
               inputContexts:
                 - name: contextCheckBalance
-              CR.slots:
+              CR_slots:
                 - slotName: accountType
-                  CR.slotTypeName: accountType
+                  CR_slotTypeName: accountType
                   valueElicitationSetting:
                     slotConstraint: Required
                     promptSpecification:
@@ -203,7 +203,7 @@ Resources:
                                 For which account would you like your balance?
                       maxRetries: 2
                 - slotName: dateOfBirth
-                  CR.slotTypeName: AMAZON.Date
+                  CR_slotTypeName: AMAZON.Date
                   valueElicitationSetting:
                     slotConstraint: Required
                     promptSpecification:
@@ -256,9 +256,9 @@ Resources:
                             The transfer is complete. {transferAmount} should
                             now be available in your {targetAccountType}
                             account.
-              CR.slots:
+              CR_slots:
                 - slotName: sourceAccountType
-                  CR.slotTypeName: accountType
+                  CR_slotTypeName: accountType
                   valueElicitationSetting:
                     slotConstraint: Required
                     promptSpecification:
@@ -269,7 +269,7 @@ Resources:
                                 Which account would you like to transfer from?
                       maxRetries: 2
                 - slotName: targetAccountType
-                  CR.slotTypeName: accountType
+                  CR_slotTypeName: accountType
                   valueElicitationSetting:
                     slotConstraint: Required
                     promptSpecification:
@@ -279,7 +279,7 @@ Resources:
                               value: Which account are you transferring to?
                       maxRetries: 2
                 - slotName: transferAmount
-                  CR.slotTypeName: AMAZON.Number
+                  CR_slotTypeName: AMAZON.Number
                   valueElicitationSetting:
                     slotConstraint: Required
                     promptSpecification:
@@ -303,8 +303,8 @@ Resources:
           Fn::Sub: "${LexV2CfnCrStackName}-LexV2CfnCrFunctionArn"
       botId: !Ref LexBot
       # botVersionLocaleSpecification is derived from the bot locales
-      CR.botLocaleIds: !GetAtt LexBot.botLocaleIds
-      CR.lastUpdatedDateTime: !GetAtt LexBot.lastUpdatedDateTime
+      CR_botLocaleIds: !GetAtt LexBot.botLocaleIds
+      CR_lastUpdatedDateTime: !GetAtt LexBot.lastUpdatedDateTime
 
   LexBotAlias:
     # Alias is deleted by the Bot on Stack Deletions
