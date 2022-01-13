@@ -31,14 +31,14 @@
             "Fn::Sub": "${LexV2CfnCrStackName}-LexServiceLinkedRole"
           }
         },
-        "CR.botLocales": [
+        "CR_botLocales": [
           {
             "localeId": "en_US",
             "nluIntentConfidenceThreshold": "0.40",
             "voiceSettings": {
               "voiceId": "Salli"
             },
-            "CR.slotTypes": [
+            "CR_slotTypes": [
               {
                 "slotTypeName": "QNAWageSlotType",
                 "valueSelectionSetting": {
@@ -50,7 +50,7 @@
                 "parentSlotTypeSignature": "AMAZON.AlphaNumeric"
               }
             ],
-            "CR.intents": [
+            "CR_intents": [
               {
                 "intentName": "WageIntent",
                 "sampleUtterances": [
@@ -102,10 +102,10 @@
                     ]
                   }
                 },
-                "CR.slots": [
+                "CR_slots": [
                   {
                     "slotName": "Wage",
-                    "CR.slotTypeName": "QNAWageSlotType",
+                    "CR_slotTypeName": "QNAWageSlotType",
                     "valueElicitationSetting": {
                       "slotConstraint": "Required",
                       "promptSpecification": {
@@ -143,13 +143,13 @@
         "botId": {
           "Ref": "ResponseBotQNAWage"
         },
-        "CR.botLocaleIds": {
+        "CR_botLocaleIds": {
           "Fn::GetAtt": [
             "ResponseBotQNAWage",
             "botLocaleIds"
           ]
         },
-        "CR.lastUpdatedDateTime": {
+        "CR_lastUpdatedDateTime": {
           "Fn::GetAtt": [
             "ResponseBotQNAWage",
             "lastUpdatedDateTime"
@@ -201,14 +201,14 @@
             "Fn::Sub": "${LexV2CfnCrStackName}-LexServiceLinkedRole"
           }
         },
-        "CR.botLocales": [
+        "CR_botLocales": [
           {
             "localeId": "en_US",
             "nluIntentConfidenceThreshold": "0.40",
             "voiceSettings": {
               "voiceId": "Salli"
             },
-            "CR.slotTypes": [
+            "CR_slotTypes": [
               {
                 "slotTypeName": "QNASocialSecuritySlotType",
                 "valueSelectionSetting": {
@@ -220,7 +220,7 @@
                 "parentSlotTypeSignature": "AMAZON.AlphaNumeric"
               }
             ],
-            "CR.intents": [
+            "CR_intents": [
               {
                 "intentName": "SocialSecurityIntent",
                 "sampleUtterances": [
@@ -275,10 +275,10 @@
                     ]
                   }
                 },
-                "CR.slots": [
+                "CR_slots": [
                   {
                     "slotName": "SSN",
-                    "CR.slotTypeName": "QNASocialSecuritySlotType",
+                    "CR_slotTypeName": "QNASocialSecuritySlotType",
                     "valueElicitationSetting": {
                       "slotConstraint": "Required",
                       "promptSpecification": {
@@ -316,13 +316,13 @@
         "botId": {
           "Ref": "ResponseBotQNASocialSecurity"
         },
-        "CR.botLocaleIds": {
+        "CR_botLocaleIds": {
           "Fn::GetAtt": [
             "ResponseBotQNASocialSecurity",
             "botLocaleIds"
           ]
         },
-        "CR.lastUpdatedDateTime": {
+        "CR_lastUpdatedDateTime": {
           "Fn::GetAtt": [
             "ResponseBotQNASocialSecurity",
             "lastUpdatedDateTime"
@@ -374,14 +374,14 @@
             "Fn::Sub": "${LexV2CfnCrStackName}-LexServiceLinkedRole"
           }
         },
-        "CR.botLocales": [
+        "CR_botLocales": [
           {
             "localeId": "en_US",
             "nluIntentConfidenceThreshold": "0.40",
             "voiceSettings": {
               "voiceId": "Salli"
             },
-            "CR.slotTypes": [
+            "CR_slotTypes": [
               {
                 "slotTypeName": "QNAPinSlotType",
                 "valueSelectionSetting": {
@@ -393,7 +393,7 @@
                 "parentSlotTypeSignature": "AMAZON.AlphaNumeric"
               }
             ],
-            "CR.intents": [
+            "CR_intents": [
               {
                 "intentName": "PINIntent",
                 "sampleUtterances": [
@@ -448,10 +448,10 @@
                     ]
                   }
                 },
-                "CR.slots": [
+                "CR_slots": [
                   {
                     "slotName": "Pin",
-                    "CR.slotTypeName": "QNAPinSlotType",
+                    "CR_slotTypeName": "QNAPinSlotType",
                     "valueElicitationSetting": {
                       "slotConstraint": "Required",
                       "promptSpecification": {
@@ -489,13 +489,13 @@
         "botId": {
           "Ref": "ResponseBotQNAPin"
         },
-        "CR.botLocaleIds": {
+        "CR_botLocaleIds": {
           "Fn::GetAtt": [
             "ResponseBotQNAPin",
             "botLocaleIds"
           ]
         },
-        "CR.lastUpdatedDateTime": {
+        "CR_lastUpdatedDateTime": {
           "Fn::GetAtt": [
             "ResponseBotQNAPin",
             "lastUpdatedDateTime"
@@ -547,14 +547,14 @@
             "Fn::Sub": "${LexV2CfnCrStackName}-LexServiceLinkedRole"
           }
         },
-        "CR.botLocales": [
+        "CR_botLocales": [
           {
             "localeId": "en_US",
             "nluIntentConfidenceThreshold": "0.40",
             "voiceSettings": {
               "voiceId": "Salli"
             },
-            "CR.slotTypes": [
+            "CR_slotTypes": [
               {
                 "slotTypeName": "QNAPinNoConfirmSlotType",
                 "valueSelectionSetting": {
@@ -566,7 +566,7 @@
                 "parentSlotTypeSignature": "AMAZON.AlphaNumeric"
               }
             ],
-            "CR.intents": [
+            "CR_intents": [
               {
                 "intentName": "PINNoConfirmIntent",
                 "sampleUtterances": [
@@ -596,10 +596,10 @@
                     ]
                   }
                 },
-                "CR.slots": [
+                "CR_slots": [
                   {
                     "slotName": "Pin",
-                    "CR.slotTypeName": "QNAPinNoConfirmSlotType",
+                    "CR_slotTypeName": "QNAPinNoConfirmSlotType",
                     "valueElicitationSetting": {
                       "slotConstraint": "Required",
                       "promptSpecification": {
@@ -637,13 +637,13 @@
         "botId": {
           "Ref": "ResponseBotQNAPinNoConfirm"
         },
-        "CR.botLocaleIds": {
+        "CR_botLocaleIds": {
           "Fn::GetAtt": [
             "ResponseBotQNAPinNoConfirm",
             "botLocaleIds"
           ]
         },
-        "CR.lastUpdatedDateTime": {
+        "CR_lastUpdatedDateTime": {
           "Fn::GetAtt": [
             "ResponseBotQNAPinNoConfirm",
             "lastUpdatedDateTime"
@@ -695,14 +695,14 @@
             "Fn::Sub": "${LexV2CfnCrStackName}-LexServiceLinkedRole"
           }
         },
-        "CR.botLocales": [
+        "CR_botLocales": [
           {
             "localeId": "en_US",
             "nluIntentConfidenceThreshold": "0.40",
             "voiceSettings": {
               "voiceId": "Salli"
             },
-            "CR.slotTypes": [
+            "CR_slotTypes": [
               {
                 "slotTypeName": "QNAYesNoSlotType",
                 "slotTypeValues": [
@@ -780,7 +780,7 @@
                 }
               }
             ],
-            "CR.intents": [
+            "CR_intents": [
               {
                 "intentName": "YesNoIntent",
                 "sampleUtterances": [
@@ -804,10 +804,10 @@
                     ]
                   }
                 },
-                "CR.slots": [
+                "CR_slots": [
                   {
                     "slotName": "Yes_No",
-                    "CR.slotTypeName": "QNAYesNoSlotType",
+                    "CR_slotTypeName": "QNAYesNoSlotType",
                     "valueElicitationSetting": {
                       "slotConstraint": "Required",
                       "promptSpecification": {
@@ -845,13 +845,13 @@
         "botId": {
           "Ref": "ResponseBotQNAYesNo"
         },
-        "CR.botLocaleIds": {
+        "CR_botLocaleIds": {
           "Fn::GetAtt": [
             "ResponseBotQNAYesNo",
             "botLocaleIds"
           ]
         },
-        "CR.lastUpdatedDateTime": {
+        "CR_lastUpdatedDateTime": {
           "Fn::GetAtt": [
             "ResponseBotQNAYesNo",
             "lastUpdatedDateTime"
@@ -903,14 +903,14 @@
             "Fn::Sub": "${LexV2CfnCrStackName}-LexServiceLinkedRole"
           }
         },
-        "CR.botLocales": [
+        "CR_botLocales": [
           {
             "localeId": "en_US",
             "nluIntentConfidenceThreshold": "0.40",
             "voiceSettings": {
               "voiceId": "Salli"
             },
-            "CR.slotTypes": [
+            "CR_slotTypes": [
               {
                 "slotTypeName": "QNAYesNoExitSlotType",
                 "slotTypeValues": [
@@ -1025,7 +1025,7 @@
                 }
               }
             ],
-            "CR.intents": [
+            "CR_intents": [
               {
                 "intentName": "YesNoExitIntent",
                 "sampleUtterances": [
@@ -1049,10 +1049,10 @@
                     ]
                   }
                 },
-                "CR.slots": [
+                "CR_slots": [
                   {
                     "slotName": "Yes_No_Exit",
-                    "CR.slotTypeName": "QNAYesNoExitSlotType",
+                    "CR_slotTypeName": "QNAYesNoExitSlotType",
                     "valueElicitationSetting": {
                       "slotConstraint": "Required",
                       "promptSpecification": {
@@ -1090,13 +1090,13 @@
         "botId": {
           "Ref": "ResponseBotQNAYesNoExit"
         },
-        "CR.botLocaleIds": {
+        "CR_botLocaleIds": {
           "Fn::GetAtt": [
             "ResponseBotQNAYesNoExit",
             "botLocaleIds"
           ]
         },
-        "CR.lastUpdatedDateTime": {
+        "CR_lastUpdatedDateTime": {
           "Fn::GetAtt": [
             "ResponseBotQNAYesNoExit",
             "lastUpdatedDateTime"
@@ -1148,14 +1148,14 @@
             "Fn::Sub": "${LexV2CfnCrStackName}-LexServiceLinkedRole"
           }
         },
-        "CR.botLocales": [
+        "CR_botLocales": [
           {
             "localeId": "en_US",
             "nluIntentConfidenceThreshold": "0.40",
             "voiceSettings": {
               "voiceId": "Salli"
             },
-            "CR.intents": [
+            "CR_intents": [
               {
                 "intentName": "DateIntent",
                 "sampleUtterances": [
@@ -1225,10 +1225,10 @@
                     ]
                   }
                 },
-                "CR.slots": [
+                "CR_slots": [
                   {
                     "slotName": "date",
-                    "CR.slotTypeName": "AMAZON.Date",
+                    "CR_slotTypeName": "AMAZON.Date",
                     "valueElicitationSetting": {
                       "slotConstraint": "Required",
                       "promptSpecification": {
@@ -1266,13 +1266,13 @@
         "botId": {
           "Ref": "ResponseBotQNADate"
         },
-        "CR.botLocaleIds": {
+        "CR_botLocaleIds": {
           "Fn::GetAtt": [
             "ResponseBotQNADate",
             "botLocaleIds"
           ]
         },
-        "CR.lastUpdatedDateTime": {
+        "CR_lastUpdatedDateTime": {
           "Fn::GetAtt": [
             "ResponseBotQNADate",
             "lastUpdatedDateTime"
@@ -1324,14 +1324,14 @@
             "Fn::Sub": "${LexV2CfnCrStackName}-LexServiceLinkedRole"
           }
         },
-        "CR.botLocales": [
+        "CR_botLocales": [
           {
             "localeId": "en_US",
             "nluIntentConfidenceThreshold": "0.40",
             "voiceSettings": {
               "voiceId": "Salli"
             },
-            "CR.intents": [
+            "CR_intents": [
               {
                 "intentName": "DateNoConfirmIntent",
                 "sampleUtterances": [
@@ -1376,10 +1376,10 @@
                     ]
                   }
                 },
-                "CR.slots": [
+                "CR_slots": [
                   {
                     "slotName": "date",
-                    "CR.slotTypeName": "AMAZON.Date",
+                    "CR_slotTypeName": "AMAZON.Date",
                     "valueElicitationSetting": {
                       "slotConstraint": "Required",
                       "promptSpecification": {
@@ -1417,13 +1417,13 @@
         "botId": {
           "Ref": "ResponseBotQNADateNoConfirm"
         },
-        "CR.botLocaleIds": {
+        "CR_botLocaleIds": {
           "Fn::GetAtt": [
             "ResponseBotQNADateNoConfirm",
             "botLocaleIds"
           ]
         },
-        "CR.lastUpdatedDateTime": {
+        "CR_lastUpdatedDateTime": {
           "Fn::GetAtt": [
             "ResponseBotQNADateNoConfirm",
             "lastUpdatedDateTime"
@@ -1475,14 +1475,14 @@
             "Fn::Sub": "${LexV2CfnCrStackName}-LexServiceLinkedRole"
           }
         },
-        "CR.botLocales": [
+        "CR_botLocales": [
           {
             "localeId": "en_US",
             "nluIntentConfidenceThreshold": "0.40",
             "voiceSettings": {
               "voiceId": "Salli"
             },
-            "CR.slotTypes": [
+            "CR_slotTypes": [
               {
                 "slotTypeName": "QNADayOfWeekSlotType",
                 "slotTypeValues": [
@@ -1598,7 +1598,7 @@
                 }
               }
             ],
-            "CR.intents": [
+            "CR_intents": [
               {
                 "intentName": "DayOfWeekIntent",
                 "sampleUtterances": [
@@ -1659,10 +1659,10 @@
                     ]
                   }
                 },
-                "CR.slots": [
+                "CR_slots": [
                   {
                     "slotName": "DayOfWeek",
-                    "CR.slotTypeName": "QNADayOfWeekSlotType",
+                    "CR_slotTypeName": "QNADayOfWeekSlotType",
                     "valueElicitationSetting": {
                       "slotConstraint": "Required",
                       "promptSpecification": {
@@ -1700,13 +1700,13 @@
         "botId": {
           "Ref": "ResponseBotQNADayOfWeek"
         },
-        "CR.botLocaleIds": {
+        "CR_botLocaleIds": {
           "Fn::GetAtt": [
             "ResponseBotQNADayOfWeek",
             "botLocaleIds"
           ]
         },
-        "CR.lastUpdatedDateTime": {
+        "CR_lastUpdatedDateTime": {
           "Fn::GetAtt": [
             "ResponseBotQNADayOfWeek",
             "lastUpdatedDateTime"
@@ -1758,14 +1758,14 @@
             "Fn::Sub": "${LexV2CfnCrStackName}-LexServiceLinkedRole"
           }
         },
-        "CR.botLocales": [
+        "CR_botLocales": [
           {
             "localeId": "en_US",
             "nluIntentConfidenceThreshold": "0.40",
             "voiceSettings": {
               "voiceId": "Salli"
             },
-            "CR.slotTypes": [
+            "CR_slotTypes": [
               {
                 "slotTypeName": "QNAMonthSlotType",
                 "slotTypeValues": [
@@ -1931,7 +1931,7 @@
                 }
               }
             ],
-            "CR.intents": [
+            "CR_intents": [
               {
                 "intentName": "MonthIntent",
                 "sampleUtterances": [
@@ -1989,10 +1989,10 @@
                     ]
                   }
                 },
-                "CR.slots": [
+                "CR_slots": [
                   {
                     "slotName": "Month",
-                    "CR.slotTypeName": "QNAMonthSlotType",
+                    "CR_slotTypeName": "QNAMonthSlotType",
                     "valueElicitationSetting": {
                       "slotConstraint": "Required",
                       "promptSpecification": {
@@ -2030,13 +2030,13 @@
         "botId": {
           "Ref": "ResponseBotQNAMonth"
         },
-        "CR.botLocaleIds": {
+        "CR_botLocaleIds": {
           "Fn::GetAtt": [
             "ResponseBotQNAMonth",
             "botLocaleIds"
           ]
         },
-        "CR.lastUpdatedDateTime": {
+        "CR_lastUpdatedDateTime": {
           "Fn::GetAtt": [
             "ResponseBotQNAMonth",
             "lastUpdatedDateTime"
@@ -2088,14 +2088,14 @@
             "Fn::Sub": "${LexV2CfnCrStackName}-LexServiceLinkedRole"
           }
         },
-        "CR.botLocales": [
+        "CR_botLocales": [
           {
             "localeId": "en_US",
             "nluIntentConfidenceThreshold": "0.40",
             "voiceSettings": {
               "voiceId": "Salli"
             },
-            "CR.slotTypes": [
+            "CR_slotTypes": [
               {
                 "slotTypeName": "QNAMonthNoConfirmSlotType",
                 "slotTypeValues": [
@@ -2261,7 +2261,7 @@
                 }
               }
             ],
-            "CR.intents": [
+            "CR_intents": [
               {
                 "intentName": "MonthNoConfirmIntent",
                 "sampleUtterances": [
@@ -2294,10 +2294,10 @@
                     ]
                   }
                 },
-                "CR.slots": [
+                "CR_slots": [
                   {
                     "slotName": "Month",
-                    "CR.slotTypeName": "QNAMonthNoConfirmSlotType",
+                    "CR_slotTypeName": "QNAMonthNoConfirmSlotType",
                     "valueElicitationSetting": {
                       "slotConstraint": "Required",
                       "promptSpecification": {
@@ -2335,13 +2335,13 @@
         "botId": {
           "Ref": "ResponseBotQNAMonthNoConfirm"
         },
-        "CR.botLocaleIds": {
+        "CR_botLocaleIds": {
           "Fn::GetAtt": [
             "ResponseBotQNAMonthNoConfirm",
             "botLocaleIds"
           ]
         },
-        "CR.lastUpdatedDateTime": {
+        "CR_lastUpdatedDateTime": {
           "Fn::GetAtt": [
             "ResponseBotQNAMonthNoConfirm",
             "lastUpdatedDateTime"
@@ -2393,14 +2393,14 @@
             "Fn::Sub": "${LexV2CfnCrStackName}-LexServiceLinkedRole"
           }
         },
-        "CR.botLocales": [
+        "CR_botLocales": [
           {
             "localeId": "en_US",
             "nluIntentConfidenceThreshold": "0.40",
             "voiceSettings": {
               "voiceId": "Salli"
             },
-            "CR.intents": [
+            "CR_intents": [
               {
                 "intentName": "NumberIntent",
                 "sampleUtterances": [
@@ -2455,10 +2455,10 @@
                     ]
                   }
                 },
-                "CR.slots": [
+                "CR_slots": [
                   {
                     "slotName": "Number",
-                    "CR.slotTypeName": "AMAZON.Number",
+                    "CR_slotTypeName": "AMAZON.Number",
                     "valueElicitationSetting": {
                       "slotConstraint": "Required",
                       "promptSpecification": {
@@ -2496,13 +2496,13 @@
         "botId": {
           "Ref": "ResponseBotQNANumber"
         },
-        "CR.botLocaleIds": {
+        "CR_botLocaleIds": {
           "Fn::GetAtt": [
             "ResponseBotQNANumber",
             "botLocaleIds"
           ]
         },
-        "CR.lastUpdatedDateTime": {
+        "CR_lastUpdatedDateTime": {
           "Fn::GetAtt": [
             "ResponseBotQNANumber",
             "lastUpdatedDateTime"
@@ -2554,14 +2554,14 @@
             "Fn::Sub": "${LexV2CfnCrStackName}-LexServiceLinkedRole"
           }
         },
-        "CR.botLocales": [
+        "CR_botLocales": [
           {
             "localeId": "en_US",
             "nluIntentConfidenceThreshold": "0.40",
             "voiceSettings": {
               "voiceId": "Salli"
             },
-            "CR.intents": [
+            "CR_intents": [
               {
                 "intentName": "NumberNoConfirmIntent",
                 "sampleUtterances": [
@@ -2591,10 +2591,10 @@
                     ]
                   }
                 },
-                "CR.slots": [
+                "CR_slots": [
                   {
                     "slotName": "Number",
-                    "CR.slotTypeName": "AMAZON.Number",
+                    "CR_slotTypeName": "AMAZON.Number",
                     "valueElicitationSetting": {
                       "slotConstraint": "Required",
                       "promptSpecification": {
@@ -2632,13 +2632,13 @@
         "botId": {
           "Ref": "ResponseBotQNANumberNoConfirm"
         },
-        "CR.botLocaleIds": {
+        "CR_botLocaleIds": {
           "Fn::GetAtt": [
             "ResponseBotQNANumberNoConfirm",
             "botLocaleIds"
           ]
         },
-        "CR.lastUpdatedDateTime": {
+        "CR_lastUpdatedDateTime": {
           "Fn::GetAtt": [
             "ResponseBotQNANumberNoConfirm",
             "lastUpdatedDateTime"
@@ -2690,14 +2690,14 @@
             "Fn::Sub": "${LexV2CfnCrStackName}-LexServiceLinkedRole"
           }
         },
-        "CR.botLocales": [
+        "CR_botLocales": [
           {
             "localeId": "en_US",
             "nluIntentConfidenceThreshold": "0.40",
             "voiceSettings": {
               "voiceId": "Salli"
             },
-            "CR.intents": [
+            "CR_intents": [
               {
                 "intentName": "AgeIntent",
                 "sampleUtterances": [
@@ -2776,10 +2776,10 @@
                     ]
                   }
                 },
-                "CR.slots": [
+                "CR_slots": [
                   {
                     "slotName": "Age",
-                    "CR.slotTypeName": "AMAZON.Number",
+                    "CR_slotTypeName": "AMAZON.Number",
                     "valueElicitationSetting": {
                       "slotConstraint": "Required",
                       "promptSpecification": {
@@ -2817,13 +2817,13 @@
         "botId": {
           "Ref": "ResponseBotQNAAge"
         },
-        "CR.botLocaleIds": {
+        "CR_botLocaleIds": {
           "Fn::GetAtt": [
             "ResponseBotQNAAge",
             "botLocaleIds"
           ]
         },
-        "CR.lastUpdatedDateTime": {
+        "CR_lastUpdatedDateTime": {
           "Fn::GetAtt": [
             "ResponseBotQNAAge",
             "lastUpdatedDateTime"
@@ -2875,14 +2875,14 @@
             "Fn::Sub": "${LexV2CfnCrStackName}-LexServiceLinkedRole"
           }
         },
-        "CR.botLocales": [
+        "CR_botLocales": [
           {
             "localeId": "en_US",
             "nluIntentConfidenceThreshold": "0.40",
             "voiceSettings": {
               "voiceId": "Salli"
             },
-            "CR.intents": [
+            "CR_intents": [
               {
                 "intentName": "PhoneNumberIntent",
                 "sampleUtterances": [
@@ -2937,10 +2937,10 @@
                     ]
                   }
                 },
-                "CR.slots": [
+                "CR_slots": [
                   {
                     "slotName": "PhoneNumber",
-                    "CR.slotTypeName": "AMAZON.PhoneNumber",
+                    "CR_slotTypeName": "AMAZON.PhoneNumber",
                     "valueElicitationSetting": {
                       "slotConstraint": "Required",
                       "promptSpecification": {
@@ -2978,13 +2978,13 @@
         "botId": {
           "Ref": "ResponseBotQNAPhoneNumber"
         },
-        "CR.botLocaleIds": {
+        "CR_botLocaleIds": {
           "Fn::GetAtt": [
             "ResponseBotQNAPhoneNumber",
             "botLocaleIds"
           ]
         },
-        "CR.lastUpdatedDateTime": {
+        "CR_lastUpdatedDateTime": {
           "Fn::GetAtt": [
             "ResponseBotQNAPhoneNumber",
             "lastUpdatedDateTime"
@@ -3036,14 +3036,14 @@
             "Fn::Sub": "${LexV2CfnCrStackName}-LexServiceLinkedRole"
           }
         },
-        "CR.botLocales": [
+        "CR_botLocales": [
           {
             "localeId": "en_US",
             "nluIntentConfidenceThreshold": "0.40",
             "voiceSettings": {
               "voiceId": "Salli"
             },
-            "CR.intents": [
+            "CR_intents": [
               {
                 "intentName": "NumberNoConfirmIntent",
                 "sampleUtterances": [
@@ -3073,10 +3073,10 @@
                     ]
                   }
                 },
-                "CR.slots": [
+                "CR_slots": [
                   {
                     "slotName": "PhoneNumber",
-                    "CR.slotTypeName": "AMAZON.PhoneNumber",
+                    "CR_slotTypeName": "AMAZON.PhoneNumber",
                     "valueElicitationSetting": {
                       "slotConstraint": "Required",
                       "promptSpecification": {
@@ -3114,13 +3114,13 @@
         "botId": {
           "Ref": "ResponseBotQNAPhoneNumberNoConfirm"
         },
-        "CR.botLocaleIds": {
+        "CR_botLocaleIds": {
           "Fn::GetAtt": [
             "ResponseBotQNAPhoneNumberNoConfirm",
             "botLocaleIds"
           ]
         },
-        "CR.lastUpdatedDateTime": {
+        "CR_lastUpdatedDateTime": {
           "Fn::GetAtt": [
             "ResponseBotQNAPhoneNumberNoConfirm",
             "lastUpdatedDateTime"
@@ -3172,14 +3172,14 @@
             "Fn::Sub": "${LexV2CfnCrStackName}-LexServiceLinkedRole"
           }
         },
-        "CR.botLocales": [
+        "CR_botLocales": [
           {
             "localeId": "en_US",
             "nluIntentConfidenceThreshold": "0.40",
             "voiceSettings": {
               "voiceId": "Salli"
             },
-            "CR.intents": [
+            "CR_intents": [
               {
                 "intentName": "TimeIntent",
                 "sampleUtterances": [
@@ -3237,10 +3237,10 @@
                     ]
                   }
                 },
-                "CR.slots": [
+                "CR_slots": [
                   {
                     "slotName": "Time",
-                    "CR.slotTypeName": "AMAZON.Time",
+                    "CR_slotTypeName": "AMAZON.Time",
                     "valueElicitationSetting": {
                       "slotConstraint": "Required",
                       "promptSpecification": {
@@ -3278,13 +3278,13 @@
         "botId": {
           "Ref": "ResponseBotQNATime"
         },
-        "CR.botLocaleIds": {
+        "CR_botLocaleIds": {
           "Fn::GetAtt": [
             "ResponseBotQNATime",
             "botLocaleIds"
           ]
         },
-        "CR.lastUpdatedDateTime": {
+        "CR_lastUpdatedDateTime": {
           "Fn::GetAtt": [
             "ResponseBotQNATime",
             "lastUpdatedDateTime"
@@ -3336,14 +3336,14 @@
             "Fn::Sub": "${LexV2CfnCrStackName}-LexServiceLinkedRole"
           }
         },
-        "CR.botLocales": [
+        "CR_botLocales": [
           {
             "localeId": "en_US",
             "nluIntentConfidenceThreshold": "0.40",
             "voiceSettings": {
               "voiceId": "Salli"
             },
-            "CR.intents": [
+            "CR_intents": [
               {
                 "intentName": "EmailAddressIntent",
                 "sampleUtterances": [
@@ -3395,10 +3395,10 @@
                     ]
                   }
                 },
-                "CR.slots": [
+                "CR_slots": [
                   {
                     "slotName": "EmailAddress",
-                    "CR.slotTypeName": "AMAZON.EmailAddress",
+                    "CR_slotTypeName": "AMAZON.EmailAddress",
                     "valueElicitationSetting": {
                       "slotConstraint": "Required",
                       "promptSpecification": {
@@ -3436,13 +3436,13 @@
         "botId": {
           "Ref": "ResponseBotQNAEmailAddress"
         },
-        "CR.botLocaleIds": {
+        "CR_botLocaleIds": {
           "Fn::GetAtt": [
             "ResponseBotQNAEmailAddress",
             "botLocaleIds"
           ]
         },
-        "CR.lastUpdatedDateTime": {
+        "CR_lastUpdatedDateTime": {
           "Fn::GetAtt": [
             "ResponseBotQNAEmailAddress",
             "lastUpdatedDateTime"
@@ -3494,14 +3494,14 @@
             "Fn::Sub": "${LexV2CfnCrStackName}-LexServiceLinkedRole"
           }
         },
-        "CR.botLocales": [
+        "CR_botLocales": [
           {
             "localeId": "en_US",
             "nluIntentConfidenceThreshold": "0.40",
             "voiceSettings": {
               "voiceId": "Salli"
             },
-            "CR.intents": [
+            "CR_intents": [
               {
                 "intentName": "NameIntent",
                 "sampleUtterances": [
@@ -3568,10 +3568,10 @@
                     ]
                   }
                 },
-                "CR.slots": [
+                "CR_slots": [
                   {
                     "slotName": "FirstName",
-                    "CR.slotTypeName": "AMAZON.FirstName",
+                    "CR_slotTypeName": "AMAZON.FirstName",
                     "valueElicitationSetting": {
                       "slotConstraint": "Required",
                       "promptSpecification": {
@@ -3591,7 +3591,7 @@
                   },
                   {
                     "slotName": "LastName",
-                    "CR.slotTypeName": "AMAZON.LastName",
+                    "CR_slotTypeName": "AMAZON.LastName",
                     "valueElicitationSetting": {
                       "slotConstraint": "Required",
                       "promptSpecification": {
@@ -3629,13 +3629,13 @@
         "botId": {
           "Ref": "ResponseBotQNAName"
         },
-        "CR.botLocaleIds": {
+        "CR_botLocaleIds": {
           "Fn::GetAtt": [
             "ResponseBotQNAName",
             "botLocaleIds"
           ]
         },
-        "CR.lastUpdatedDateTime": {
+        "CR_lastUpdatedDateTime": {
           "Fn::GetAtt": [
             "ResponseBotQNAName",
             "lastUpdatedDateTime"

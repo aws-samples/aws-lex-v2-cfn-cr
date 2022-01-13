@@ -237,7 +237,7 @@ class Intent:
 
             if not slot_type_id:
                 raise ValueError(
-                    f"missing CR.slotTypeName or slotTypeId attribute for slot name: {slot_name}"
+                    f"missing CR_slotTypeName or slotTypeId attribute for slot name: {slot_name}"
                 )
 
             input_parameters = {

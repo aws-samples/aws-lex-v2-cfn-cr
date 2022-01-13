@@ -27,12 +27,12 @@ Resources:
       roleArn:
         !ImportValue
           Fn::Sub: "${LexV2CfnCrStackName}-LexServiceLinkedRole"
-      CR.botLocales:
+      CR_botLocales:
         - localeId: en_US
           nluIntentConfidenceThreshold: 0.40
           voiceSettings:
             voiceId: Ivy
-          CR.slotTypes:
+          CR_slotTypes:
             - slotTypeName: FlowerTypes
               description: Types of flowers to pick up
               valueSelectionSetting:
@@ -44,7 +44,7 @@ Resources:
                     value: roses
                 - sampleValue:
                     value: tulips
-          CR.intents:
+          CR_intents:
             - intentName: OrderFlowers
               description: Intent to order a bouquet of flowers for pick up
               sampleUtterances:
@@ -64,9 +64,9 @@ Resources:
                             Okay, your {FlowerType} will be ready for pickup by
                             {PickupTime} on {PickupDate}.  Does this sound okay?
                   maxRetries: 2
-              CR.slots:
+              CR_slots:
                 - slotName: FlowerType
-                  CR.slotTypeName: FlowerTypes
+                  CR_slotTypeName: FlowerTypes
                   description: The type of flowers to pick up
                   valueElicitationSetting:
                     slotConstraint: Required
@@ -78,7 +78,7 @@ Resources:
                                 What type of flowers would you like to order?
                       maxRetries: 2
                 - slotName: PickupDate
-                  CR.slotTypeName: AMAZON.Date
+                  CR_slotTypeName: AMAZON.Date
                   description: The date to pick up the flowers
                   valueElicitationSetting:
                     slotConstraint: Required
@@ -91,7 +91,7 @@ Resources:
                                 picked up?
                       maxRetries: 2
                 - slotName: PickupTime
-                  CR.slotTypeName: AMAZON.Time
+                  CR_slotTypeName: AMAZON.Time
                   description: The time to pick up the flowers
                   valueElicitationSetting:
                     slotConstraint: Required
@@ -107,7 +107,7 @@ Resources:
           nluIntentConfidenceThreshold: 0.40
           voiceSettings:
             voiceId: Lupe
-          CR.slotTypes:
+          CR_slotTypes:
             - slotTypeName: TiposDeFlores
               description: Tipos de flores a recoger
               valueSelectionSetting:
@@ -119,7 +119,7 @@ Resources:
                     value: rosas
                 - sampleValue:
                     value: tulipanes
-          CR.intents:
+          CR_intents:
             - intentName: OrdenarFlores
               description: Intención para ordenar un ramo de flores para recogido
               sampleUtterances:
@@ -140,9 +140,9 @@ Resources:
                             recogido a las {HoraDeRecogido} el {FechaDeRecogido}.
                             ¿Le parece bien?
                   maxRetries: 2
-              CR.slots:
+              CR_slots:
                 - slotName: TipoDeFlores
-                  CR.slotTypeName: TiposDeFlores
+                  CR_slotTypeName: TiposDeFlores
                   description: El tipo de flor a recoger
                   valueElicitationSetting:
                     slotConstraint: Required
@@ -154,7 +154,7 @@ Resources:
                                 ¿Qué tipo de flor le gustaría ordenar?
                       maxRetries: 2
                 - slotName: FechaDeRecogido
-                  CR.slotTypeName: AMAZON.Date
+                  CR_slotTypeName: AMAZON.Date
                   description: La fecha a recoger las flores
                   valueElicitationSetting:
                     slotConstraint: Required
@@ -166,7 +166,7 @@ Resources:
                                 ¿En qué fecha le gustaría recoger las {TipoDeFlores}?
                       maxRetries: 2
                 - slotName: HoraDeRecogido
-                  CR.slotTypeName: AMAZON.Time
+                  CR_slotTypeName: AMAZON.Time
                   description: La hora a recoger las flores
                   valueElicitationSetting:
                     slotConstraint: Required
@@ -192,8 +192,8 @@ Resources:
           Fn::Sub: "${LexV2CfnCrStackName}-LexV2CfnCrFunctionArn"
       botId: !Ref LexBot
       # botVersionLocaleSpecification is derived from the bot locales
-      CR.botLocaleIds: !GetAtt LexBot.botLocaleIds
-      CR.lastUpdatedDateTime: !GetAtt LexBot.lastUpdatedDateTime
+      CR_botLocaleIds: !GetAtt LexBot.botLocaleIds
+      CR_lastUpdatedDateTime: !GetAtt LexBot.lastUpdatedDateTime
 
   LexBotAlias:
     # Alias is deleted by the Bot on Stack Deletions

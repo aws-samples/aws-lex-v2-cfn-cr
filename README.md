@@ -108,7 +108,7 @@ Parameters:
 Resources:
   # LexBot resource contains the bot definition and subresources including:
   # locales, slot types, intents and slots. These subresources use custom
-  # attributes with a name prefix: CR.<subresource name>
+  # attributes with a name prefix: CR_<subresource name>
   # The changes are done to the DRAFT version of the bot.
   # All locales are automatically built
   LexBot:
@@ -131,7 +131,7 @@ Resources:
         !ImportValue
           Fn::Sub: "${LexV2CfnCrStackName}-LexServiceLinkedRole"
       # List of Bot Locale definitions. Requires one or more locales
-      CR.botLocales:
+      CR_botLocales:
         # Locale level attributes
         # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/lexv2-models.html#LexModelsV2.Client.create_bot_locale
         - localeId: en_US
@@ -139,7 +139,7 @@ Resources:
           voiceSettings:
             voiceId: Salli
           # List of optional Slot Type definitions
-          CR.slotTypes:
+          CR_slotTypes:
             # Slot Type level attributes
             # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/lexv2-models.html#LexModelsV2.Client.create_slot_type
             - slotTypeName: ZipCodeType
@@ -149,7 +149,7 @@ Resources:
                 regexFilter:
                   pattern: '[0-9]{8}'
           # List of Intent definitions. Requires one or more Intents
-          CR.intents:
+          CR_intents:
               # Intent level attributes
               # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/lexv2-models.html#LexModelsV2.Client.create_intent
             - intentName: UpdateZipCode
@@ -158,13 +158,13 @@ Resources:
                 - utterance: i have a new zip code
                 - utterance: my new zip code is {ZipCode}
                # List of optional Slot definitions. Defined in order of slot priority
-              CR.slots:
+              CR_slots:
                 # Slot level attributes
                 # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/lexv2-models.html#LexModelsV2.Client.create_slot
                 - slotName: ZipCode
                   # Slot Type Name is used to dyanmically resolve the ID of the
                   # associated Slot Type defined above
-                  CR.slotTypeName: ZipCodeType
+                  CR_slotTypeName: ZipCodeType
                   valueElicitationSetting:
                     slotConstraint: Required
                     promptSpecification:
@@ -205,9 +205,9 @@ Resources:
       botId: !Ref LexBot
       # botVersionLocaleSpecification is derived from the bot locales
       # this controls which locales are added to the version
-      CR.botLocaleIds: !GetAtt LexBot.botLocaleIds
+      CR_botLocaleIds: !GetAtt LexBot.botLocaleIds
       # lastUpdatedDateTime is used to detect changes in the bot
-      CR.lastUpdatedDateTime: !GetAtt LexBot.lastUpdatedDateTime
+      CR_lastUpdatedDateTime: !GetAtt LexBot.lastUpdatedDateTime
 
   # Provisions a Bot Alias that points to a version
   LexBotAlias:
@@ -252,7 +252,7 @@ Create/Update/Delete operations of the Lex V2 Models API using boto3.
 For details, see the
 [boto3 Lex V2 Models reference](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/lexv2-models.html)
 
-Some attributes of the custom resources use the prefix `CR.` as a marker for
+Some attributes of the custom resources use the prefix `CR_` as a marker for
 subresources (e.g. locales, slot types, intents, slots).
 It is also used for cases where the underlying API requires an ID that needs to
 be dynamically resolved and for custom attributes that are not part of the
